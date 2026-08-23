@@ -1,0 +1,6 @@
+{
+  "name": "Ethos Nutrition",
+  "description": "An editorial diet planner and nutritional tracker with meal builder, food library, weekly planner, and historical analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

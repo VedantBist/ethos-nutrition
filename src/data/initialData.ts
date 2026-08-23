@@ -1,0 +1,476 @@
+import { FoodItem, Meal, DayPlan, UserProfile, DayLog } from '../types';
+
+export const INITIAL_FOOD_ITEMS: FoodItem[] = [
+  {
+    id: 'food-chicken-breast',
+    name: 'Chicken Breast',
+    subtitle: 'Raw, boneless & skinless',
+    category: 'Proteins',
+    servingDefaultGrams: 150,
+    kcalPer100g: 165,
+    proteinPer100g: 31,
+    carbsPer100g: 0,
+    fatPer100g: 3.6,
+    fiberPer100g: 0,
+    icon: 'set_meal',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWqSDIwN3Mnk66wS1XarULwej95du8UKsDstCHZlCMJx1dTEta7li-Rnz3J-dYhe8cP8ylFQNwxlZJLc_EMoUSwUM_AsyuB4lkiYzAux3Zlshd4ZMfPSW9QBnkqM8zAZn0IQebE0V7jdi4bBviGXBMDgqPnm9FAoOESSmL36iESebE5IaQd2kAvI7hBMX4knhYAagCp0Kt_Kt11SlTDFxm7o5OKT8d9bBuC_qOTSOaSe-22c04dXU9',
+    description: 'Lean high-quality poultry protein source packed with essential amino acids, niacin, and phosphorus for cellular repair.'
+  },
+  {
+    id: 'food-wild-salmon',
+    name: 'Wild Atlantic Salmon',
+    subtitle: 'Raw, wild-caught',
+    category: 'Proteins',
+    servingDefaultGrams: 150,
+    kcalPer100g: 208,
+    proteinPer100g: 22,
+    carbsPer100g: 0,
+    fatPer100g: 13,
+    fiberPer100g: 0,
+    icon: 'set_meal',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBgI1PsaIPbFZwgcmIbAG5xH9e2ipxP9MsiNJC08Fs5CE7krupsQH1q-uSFUe1OQgrM_cdccLb7Mo6Q8lzLzffTolbnNe_cuEDsIZCOxXMWa1_HZm7pOHOOTZd_LvGCvHsY3aIRyTP8z1wNF1_1i_31_JkFpJbKPAn19mjike-QcZdlkSvfWl4z8MHeruBaZk64PpMhaa4FX0qMKoKVRcLy-HbrC082R2T53z-i_cE4BeKYXfdYAVgd',
+    description: 'Restorative omega-3 rich fish providing EPA and DHA fatty acids to promote cardiovascular health and cognitive vitality.'
+  },
+  {
+    id: 'food-egg',
+    name: 'Organic Whole Egg',
+    subtitle: 'Free-range, fresh',
+    category: 'Proteins',
+    servingDefaultGrams: 100,
+    kcalPer100g: 155,
+    proteinPer100g: 13,
+    carbsPer100g: 1.1,
+    fatPer100g: 11,
+    fiberPer100g: 0,
+    icon: 'egg',
+    description: 'Complete nutrient-dense protein with bioavailable choline, lutein, and essential fat-soluble vitamins.'
+  },
+  {
+    id: 'food-paneer',
+    name: 'Artisan Paneer',
+    subtitle: 'Fresh unaged cottage curd',
+    category: 'Proteins',
+    servingDefaultGrams: 100,
+    kcalPer100g: 265,
+    proteinPer100g: 18,
+    carbsPer100g: 6,
+    fatPer100g: 20,
+    fiberPer100g: 0,
+    icon: 'restaurant',
+    description: 'Creamy high-protein vegetarian classic offering slow-digesting casein and rich calcium.'
+  },
+  {
+    id: 'food-quinoa',
+    name: 'Organic White Quinoa',
+    subtitle: 'Cooked grain',
+    category: 'Grains & Staples',
+    servingDefaultGrams: 100,
+    kcalPer100g: 120,
+    proteinPer100g: 4.4,
+    carbsPer100g: 21.3,
+    fatPer100g: 1.9,
+    fiberPer100g: 2.8,
+    icon: 'grain',
+    description: 'Ancient Andean pseudocereal naturally gluten-free and containing all nine essential amino acids.'
+  },
+  {
+    id: 'food-jasmine-rice',
+    name: 'Steamed Jasmine Rice',
+    subtitle: 'Cooked, fragrant',
+    category: 'Grains & Staples',
+    servingDefaultGrams: 150,
+    kcalPer100g: 130,
+    proteinPer100g: 2.7,
+    carbsPer100g: 28.2,
+    fatPer100g: 0.3,
+    fiberPer100g: 0.4,
+    icon: 'rice_bowl',
+    description: 'Delicate floral white rice that quickly replenishes muscle glycogen and supports digestive ease.'
+  },
+  {
+    id: 'food-rolled-oats',
+    name: 'Whole Rolled Oats',
+    subtitle: 'Raw, organic',
+    category: 'Grains & Staples',
+    servingDefaultGrams: 80,
+    kcalPer100g: 389,
+    proteinPer100g: 16.9,
+    carbsPer100g: 66.3,
+    fatPer100g: 6.9,
+    fiberPer100g: 10.6,
+    icon: 'grain',
+    description: 'Soluble beta-glucan fiber powerhouse stabilizing blood glucose and supporting healthy cholesterol.'
+  },
+  {
+    id: 'food-sweet-potato',
+    name: 'Roasted Sweet Potato',
+    subtitle: 'Baked with skin',
+    category: 'Vegetables',
+    servingDefaultGrams: 150,
+    kcalPer100g: 90,
+    proteinPer100g: 2,
+    carbsPer100g: 20.7,
+    fatPer100g: 0.2,
+    fiberPer100g: 3.3,
+    icon: 'spa',
+    description: 'Complex carbohydrate rich in antioxidant beta-carotene and potassium.'
+  },
+  {
+    id: 'food-mixed-greens',
+    name: 'Mixed Spring Greens',
+    subtitle: 'Fresh baby arugula & spinach',
+    category: 'Vegetables',
+    servingDefaultGrams: 50,
+    kcalPer100g: 23,
+    proteinPer100g: 2.2,
+    carbsPer100g: 3.6,
+    fatPer100g: 0.4,
+    fiberPer100g: 2.1,
+    icon: 'eco',
+    description: 'Crisp phytonutrient-packed leafy greens containing folate, chlorophyll, and vitamin K.'
+  },
+  {
+    id: 'food-avocado',
+    name: 'Hass Avocado',
+    subtitle: 'Raw, fresh',
+    category: 'Fruits',
+    servingDefaultGrams: 75,
+    kcalPer100g: 160,
+    proteinPer100g: 2,
+    carbsPer100g: 8.5,
+    fatPer100g: 14.7,
+    fiberPer100g: 6.7,
+    icon: 'spa',
+    description: 'Monounsaturated oleic fat source promoting nutrient absorption and satiety.'
+  },
+  {
+    id: 'food-greek-yogurt',
+    name: 'Greek Yogurt (Non-Fat)',
+    subtitle: 'Plain strained curd',
+    category: 'Dairy',
+    servingDefaultGrams: 150,
+    kcalPer100g: 59,
+    proteinPer100g: 10.2,
+    carbsPer100g: 3.6,
+    fatPer100g: 0.4,
+    fiberPer100g: 0,
+    icon: 'egg',
+    description: 'Velvety probiotic dairy delivering active cultures and dense branched-chain amino acids.'
+  },
+  {
+    id: 'food-almonds',
+    name: 'Raw Almonds',
+    subtitle: 'Unsalted, whole',
+    category: 'Nuts & Seeds',
+    servingDefaultGrams: 30,
+    kcalPer100g: 579,
+    proteinPer100g: 21.2,
+    carbsPer100g: 21.6,
+    fatPer100g: 49.9,
+    fiberPer100g: 12.5,
+    icon: 'eco',
+    description: 'Crunchy plant-based protein with antioxidant Vitamin E and magnesium.'
+  },
+  {
+    id: 'food-lentils',
+    name: 'Brown & Red Lentils',
+    subtitle: 'Boiled & seasoned',
+    category: 'Legumes',
+    servingDefaultGrams: 150,
+    kcalPer100g: 116,
+    proteinPer100g: 9,
+    carbsPer100g: 20.1,
+    fatPer100g: 0.4,
+    fiberPer100g: 7.9,
+    icon: 'grain',
+    description: 'Earth-friendly legume offering resistant starches and plant-derived iron.'
+  },
+  {
+    id: 'food-olive-oil',
+    name: 'Extra Virgin Olive Oil',
+    subtitle: 'Cold-pressed',
+    category: 'Nuts & Seeds',
+    servingDefaultGrams: 15,
+    kcalPer100g: 884,
+    proteinPer100g: 0,
+    carbsPer100g: 0,
+    fatPer100g: 100,
+    fiberPer100g: 0,
+    icon: 'water_drop',
+    description: 'Liquid gold of the Mediterranean containing polyphenols and oleocanthal.'
+  }
+];
+
+export const INITIAL_MEALS: Meal[] = [
+  {
+    id: 'meal-salmon-quinoa',
+    title: 'Wild Salmon & Quinoa',
+    type: 'Lunch',
+    time: '13:00',
+    kcal: 540,
+    protein: 42,
+    carbs: 38,
+    fat: 18,
+    description: 'A restorative blend of omega-3 rich wild-caught salmon, ancient grains, and peppery greens, designed for sustained afternoon clarity.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBgI1PsaIPbFZwgcmIbAG5xH9e2ipxP9MsiNJC08Fs5CE7krupsQH1q-uSFUe1OQgrM_cdccLb7Mo6Q8lzLzffTolbnNe_cuEDsIZCOxXMWa1_HZm7pOHOOTZd_LvGCvHsY3aIRyTP8z1wNF1_1i_31_JkFpJbKPAn19mjike-QcZdlkSvfWl4z8MHeruBaZk64PpMhaa4FX0qMKoKVRcLy-HbrC082R2T53z-i_cE4BeKYXfdYAVgd',
+    ingredients: [
+      {
+        foodId: 'food-wild-salmon',
+        name: 'Wild Salmon',
+        subtitle: 'Raw, 100g = 208 kcal',
+        amountGrams: 150,
+        kcalPer100g: 208,
+        proteinPer100g: 20,
+        carbsPer100g: 0,
+        fatPer100g: 14,
+        icon: 'set_meal'
+      },
+      {
+        foodId: 'food-quinoa',
+        name: 'Organic White Quinoa',
+        subtitle: 'Cooked, 100g = 120 kcal',
+        amountGrams: 100,
+        kcalPer100g: 120,
+        proteinPer100g: 4,
+        carbsPer100g: 21,
+        fatPer100g: 2,
+        icon: 'grain'
+      },
+      {
+        foodId: 'food-mixed-greens',
+        name: 'Mixed Spring Greens',
+        subtitle: 'Fresh, 100g = 30 kcal',
+        amountGrams: 50,
+        kcalPer100g: 30,
+        proteinPer100g: 2,
+        carbsPer100g: 3,
+        fatPer100g: 0,
+        icon: 'eco'
+      }
+    ]
+  },
+  {
+    id: 'meal-chia-matcha',
+    title: 'Chia & Matcha Bowl',
+    type: 'Breakfast',
+    time: '08:00',
+    kcal: 320,
+    protein: 12,
+    carbs: 34,
+    fat: 8,
+    description: 'Ceremonial grade matcha infused chia pudding topped with blueberries and toasted seeds for calm mental alertness.',
+    ingredients: [
+      {
+        foodId: 'food-rolled-oats',
+        name: 'Whole Rolled Oats',
+        subtitle: 'Raw, 100g = 389 kcal',
+        amountGrams: 40,
+        kcalPer100g: 389,
+        proteinPer100g: 16.9,
+        carbsPer100g: 66.3,
+        fatPer100g: 6.9,
+        icon: 'grain'
+      },
+      {
+        foodId: 'food-greek-yogurt',
+        name: 'Greek Yogurt (Non-Fat)',
+        subtitle: 'Plain, 100g = 59 kcal',
+        amountGrams: 100,
+        kcalPer100g: 59,
+        proteinPer100g: 10.2,
+        carbsPer100g: 3.6,
+        fatPer100g: 0.4,
+        icon: 'egg'
+      }
+    ]
+  },
+  {
+    id: 'meal-yogurt-banana',
+    title: 'Greek Yogurt & Banana',
+    type: 'Snack',
+    time: '16:30',
+    kcal: 180,
+    protein: 15,
+    carbs: 22,
+    fat: 2,
+    description: 'Thick strained probiotic yogurt sweetened naturally with sliced ripe fruit and cinnamon.',
+    ingredients: [
+      {
+        foodId: 'food-greek-yogurt',
+        name: 'Greek Yogurt',
+        amountGrams: 150,
+        kcalPer100g: 59,
+        proteinPer100g: 10,
+        carbsPer100g: 4,
+        fatPer100g: 0.5,
+        icon: 'egg'
+      }
+    ]
+  },
+  {
+    id: 'meal-lentil-stew',
+    title: 'Lentil & Root Stew',
+    type: 'Dinner',
+    time: '19:30',
+    kcal: 540,
+    protein: 24,
+    carbs: 68,
+    fat: 12,
+    description: 'Slow-simmered green and brown lentils with caramelized root vegetables and fresh rosemary broth.',
+    ingredients: [
+      {
+        foodId: 'food-lentils',
+        name: 'Brown & Red Lentils',
+        amountGrams: 200,
+        kcalPer100g: 116,
+        proteinPer100g: 9,
+        carbsPer100g: 20,
+        fatPer100g: 0.5,
+        icon: 'grain'
+      },
+      {
+        foodId: 'food-sweet-potato',
+        name: 'Roasted Sweet Potato',
+        amountGrams: 100,
+        kcalPer100g: 90,
+        proteinPer100g: 2,
+        carbsPer100g: 21,
+        fatPer100g: 0.2,
+        icon: 'spa'
+      }
+    ]
+  }
+];
+
+export const INITIAL_USER_PROFILE: UserProfile = {
+  name: 'Aura Serene',
+  email: 'aura@example.com',
+  age: 32,
+  gender: 'Female',
+  height: '170 cm',
+  weight: '65 kg',
+  activityLevel: 'Moderately Active (3-5 days/week)',
+  targetKcal: 2000,
+  targetProtein: 120,
+  targetCarbs: 250,
+  targetFat: 65,
+  units: 'Metric',
+  notifications: true,
+  avatarUrl: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgIUkHfI-vx1CkIFaf5YMHTnobJsiMxjAEY-jebp9u1exuafV4SJw5Cg2SSH8sWoLFe4MMfj7QFmLPI5M1uc2N_6_Gsw7LzF5PaBR1VpVAbpwcKQFlqCmDtOFFMRckxjL0IQyKz2MRxm5FFj2DLCutquKZFqFVA6cg8Z4QGBRVE1QdsXGnFdQxaOwqQKx6spy0cR2pR3lpk1uFMV7S1rRl33irpUHqsW6wSyHELqXf-4ZiBE5CGSA8'
+};
+
+export const INITIAL_DAY_LOG: DayLog = {
+  date: '2026-08-24',
+  meals: {
+    breakfast: [
+      { id: 'log-1', name: 'Organic Whole Eggs (2)', amountText: '2 eggs', amountGrams: 100, kcal: 140, protein: 12, carbs: 1, fat: 10 },
+      { id: 'log-2', name: 'Oats with Cinnamon', amountText: '1 cup', amountGrams: 50, kcal: 195, protein: 6, carbs: 34, fat: 3 },
+      { id: 'log-3', name: 'Whole Milk', amountText: '1 cup', amountGrams: 200, kcal: 120, protein: 8, carbs: 11, fat: 5 }
+    ],
+    lunch: [
+      { id: 'log-4', name: 'Grilled Chicken Breast', amountText: '150g', amountGrams: 150, kcal: 247, protein: 46.5, carbs: 0, fat: 5.4 },
+      { id: 'log-5', name: 'Steamed Jasmine Rice', amountText: '200g', amountGrams: 200, kcal: 260, protein: 5.4, carbs: 56.4, fat: 0.6 },
+      { id: 'log-6', name: 'Mixed Green Salad with Olive Oil', amountText: '1 bowl', amountGrams: 80, kcal: 70, protein: 2, carbs: 4, fat: 5 }
+    ],
+    snack: [
+      { id: 'log-7', name: 'Raw Almonds', amountText: '30g', amountGrams: 30, kcal: 174, protein: 6.3, carbs: 6.5, fat: 15 }
+    ],
+    dinner: [
+      { id: 'log-8', name: 'Lentil & Sweet Potato Bowl', amountText: '1 serving', amountGrams: 300, kcal: 434, protein: 23, carbs: 65, fat: 6 }
+    ]
+  }
+};
+
+export const INITIAL_WEEK_PLAN: DayPlan[] = [
+  {
+    dayName: 'Monday',
+    dateLabel: '24 Aug',
+    slots: {
+      breakfast: { id: 'w-mon-b', title: 'Chia & Matcha Bowl', type: 'Breakfast', kcal: 320, protein: 12, carbs: 34, fat: 8 },
+      lunch: { id: 'w-mon-l', title: 'Wild Salmon & Quinoa', type: 'Lunch', kcal: 540, protein: 42, carbs: 45, fat: 22 },
+      snack: { id: 'w-mon-s', title: 'Greek Yogurt', type: 'Snack', kcal: 180, protein: 15, carbs: 10, fat: 6 },
+      dinner: { id: 'w-mon-d', title: 'Lentil Stew', type: 'Dinner', kcal: 540, protein: 22, carbs: 68, fat: 12 }
+    }
+  },
+  {
+    dayName: 'Tuesday',
+    dateLabel: '25 Aug',
+    slots: {
+      breakfast: { id: 'w-tue-b', title: 'Oats & Eggs', type: 'Breakfast', kcal: 390, protein: 24, carbs: 40, fat: 14 },
+      lunch: { id: 'w-tue-l', title: 'Chicken Breast & Jasmine Rice', type: 'Lunch', kcal: 507, protein: 52, carbs: 56, fat: 6 },
+      snack: { id: 'w-tue-s', title: 'Avocado on Toast', type: 'Snack', kcal: 240, protein: 6, carbs: 26, fat: 12 },
+      dinner: { id: 'w-tue-d', title: 'Paneer Herb Bowl', type: 'Dinner', kcal: 520, protein: 30, carbs: 38, fat: 24 }
+    }
+  },
+  {
+    dayName: 'Wednesday',
+    dateLabel: '26 Aug',
+    slots: {
+      breakfast: { id: 'w-wed-b', title: 'Matcha Protein Smoothie', type: 'Breakfast', kcal: 340, protein: 28, carbs: 30, fat: 8 },
+      lunch: { id: 'w-wed-l', title: 'Wild Salmon & Asparagus', type: 'Lunch', kcal: 480, protein: 40, carbs: 15, fat: 28 },
+      dinner: { id: 'w-wed-d', title: 'Quinoa Veggie Medley', type: 'Dinner', kcal: 490, protein: 18, carbs: 72, fat: 14 }
+    }
+  },
+  {
+    dayName: 'Thursday',
+    dateLabel: '27 Aug',
+    slots: {
+      breakfast: { id: 'w-thu-b', title: 'Greek Yogurt & Berries', type: 'Breakfast', kcal: 290, protein: 22, carbs: 35, fat: 4 },
+      lunch: { id: 'w-thu-l', title: 'Lentil & Herb Salad', type: 'Lunch', kcal: 460, protein: 24, carbs: 58, fat: 12 },
+      snack: { id: 'w-thu-s', title: 'Almonds & Dark Cocoa', type: 'Snack', kcal: 210, protein: 7, carbs: 14, fat: 16 },
+      dinner: { id: 'w-thu-d', title: 'Baked Salmon & Sweet Potato', type: 'Dinner', kcal: 560, protein: 44, carbs: 48, fat: 20 }
+    }
+  },
+  {
+    dayName: 'Friday',
+    dateLabel: '28 Aug',
+    slots: {
+      breakfast: { id: 'w-fri-b', title: 'Poached Eggs on Sourdough', type: 'Breakfast', kcal: 380, protein: 20, carbs: 42, fat: 14 },
+      lunch: { id: 'w-fri-l', title: 'Chicken Caesar Bowl', type: 'Lunch', kcal: 520, protein: 48, carbs: 18, fat: 26 },
+      dinner: { id: 'w-fri-d', title: 'Artisan Paneer Tikka Salad', type: 'Dinner', kcal: 510, protein: 28, carbs: 22, fat: 34 }
+    }
+  },
+  {
+    dayName: 'Saturday',
+    dateLabel: '29 Aug',
+    slots: {
+      breakfast: { id: 'w-sat-b', title: 'Berry Chia Awakening', type: 'Breakfast', kcal: 350, protein: 14, carbs: 46, fat: 10 },
+      lunch: { id: 'w-sat-l', title: 'Mediterranean Fish & Greens', type: 'Lunch', kcal: 530, protein: 45, carbs: 20, fat: 28 },
+      dinner: { id: 'w-sat-d', title: 'Restorative Golden Lentil Stew', type: 'Dinner', kcal: 490, protein: 25, carbs: 64, fat: 12 }
+    }
+  },
+  {
+    dayName: 'Sunday',
+    dateLabel: '30 Aug',
+    slots: {
+      breakfast: { id: 'w-sun-b', title: 'Avocado Egg Skillet', type: 'Breakfast', kcal: 420, protein: 22, carbs: 18, fat: 28 },
+      lunch: { id: 'w-sun-l', title: 'Roasted Chicken & Root Vegetables', type: 'Lunch', kcal: 550, protein: 50, carbs: 45, fat: 16 },
+      snack: { id: 'w-sun-s', title: 'Green Vitality Tea & Walnuts', type: 'Snack', kcal: 190, protein: 5, carbs: 6, fat: 18 },
+      dinner: { id: 'w-sun-d', title: 'Mindful Evening Broth & Quinoa', type: 'Dinner', kcal: 380, protein: 16, carbs: 54, fat: 8 }
+    }
+  }
+];
+
+export const HISTORY_ENTRIES_7_DAYS = [
+  { day: 'Mon', date: 'Aug 18', kcal: 1980, protein: 115, carbs: 240, fat: 62 },
+  { day: 'Tue', date: 'Aug 19', kcal: 2050, protein: 122, carbs: 255, fat: 64 },
+  { day: 'Wed', date: 'Aug 20', kcal: 1920, protein: 110, carbs: 235, fat: 58 },
+  { day: 'Thu', date: 'Aug 21', kcal: 2110, protein: 126, carbs: 260, fat: 68 },
+  { day: 'Fri', date: 'Aug 22', kcal: 2040, protein: 118, carbs: 245, fat: 65 },
+  { day: 'Sat', date: 'Aug 23', kcal: 2180, protein: 130, carbs: 270, fat: 72 },
+  { day: 'Sun', date: 'Aug 24', kcal: 2000, protein: 120, carbs: 250, fat: 60 }
+];
+
+export const HISTORY_ENTRIES_30_DAYS = Array.from({ length: 30 }, (_, i) => {
+  const dayNum = i + 1;
+  const variance = (Math.sin(i * 0.8) * 180) + (Math.cos(i * 0.4) * 90);
+  const kcal = Math.round(2040 + variance);
+  return {
+    day: `D${dayNum}`,
+    date: `Day ${dayNum}`,
+    kcal,
+    protein: Math.round(kcal * 0.25 / 4),
+    carbs: Math.round(kcal * 0.50 / 4),
+    fat: Math.round(kcal * 0.25 / 9)
+  };
+});
