@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { ActiveTab, UserProfile } from '../types';
+import React, { useState } from "react";
+import { ActiveTab, UserProfile } from "../types";
+import { authService, ApiError } from "../services/api";
 
 interface AuthViewsProps {
-  mode: 'login' | 'register';
+  mode: "login" | "register";
   setActiveTab: (tab: ActiveTab) => void;
   onAuthenticate: (name: string, email: string) => void;
 }
@@ -10,22 +11,44 @@ interface AuthViewsProps {
 export const AuthViews: React.FC<AuthViewsProps> = ({
   mode,
   setActiveTab,
-  onAuthenticate
+  onAuthenticate,
 }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onAuthenticate(name || 'Aura Serene', email || 'aura@example.com');
-    setActiveTab('overview');
+    setError(null);
+    if (mode === "register" && password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const user =
+        mode === "login"
+          ? await authService.login(email, password)
+          : await authService.register(name, email, password);
+      onAuthenticate(user.name, user.email);
+      setActiveTab("overview");
+    } catch (err) {
+      setError(
+        err instanceof ApiError
+          ? err.message
+          : "Unable to reach the server. You can still continue as a guest.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleQuickGuest = () => {
-    onAuthenticate('Aura Serene', 'aura@example.com');
-    setActiveTab('overview');
+    onAuthenticate("Aura Serene", "aura@example.com");
+    setActiveTab("overview");
   };
 
   return (
@@ -38,15 +61,17 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
               Ethos Nutrition
             </h1>
             <p className="font-label-caps text-xs text-[#bacbbc] uppercase tracking-[0.15em]">
-              {mode === 'login' ? 'Ritual of Care' : 'Begin Your Ritual'}
+              {mode === "login" ? "Ritual of Care" : "Begin Your Ritual"}
             </p>
           </header>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-            {mode === 'register' && (
+            {mode === "register" && (
               <div className="relative group">
-                <label className="sr-only" htmlFor="name">Full Name</label>
+                <label className="sr-only" htmlFor="name">
+                  Full Name
+                </label>
                 <input
                   id="name"
                   type="text"
@@ -60,7 +85,9 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
             )}
 
             <div className="relative group">
-              <label className="sr-only" htmlFor="email">Email Address</label>
+              <label className="sr-only" htmlFor="email">
+                Email Address
+              </label>
               <input
                 id="email"
                 type="email"
@@ -73,7 +100,9 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
             </div>
 
             <div className="relative group">
-              <label className="sr-only" htmlFor="password">Password</label>
+              <label className="sr-only" htmlFor="password">
+                Password
+              </label>
               <input
                 id="password"
                 type="password"
@@ -85,9 +114,11 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
               />
             </div>
 
-            {mode === 'register' && (
+            {mode === "register" && (
               <div className="relative group">
-                <label className="sr-only" htmlFor="confirm-password">Confirm Password</label>
+                <label className="sr-only" htmlFor="confirm-password">
+                  Confirm Password
+                </label>
                 <input
                   id="confirm-password"
                   type="password"
@@ -101,11 +132,24 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
             )}
 
             <div className="flex flex-col gap-4 mt-4">
+              {error && (
+                <p
+                  role="alert"
+                  className="text-sm text-[#d9a7a2] text-center -mt-2"
+                >
+                  {error}
+                </p>
+              )}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="w-full bg-[#9E8E77] hover:bg-[#b0a08b] text-[#141313] font-label-caps text-xs uppercase tracking-wider py-4 rounded-full transition-all duration-300 font-semibold shadow-lg active:scale-98"
               >
-                {mode === 'login' ? 'Enter Sanctuary' : 'Create Account'}
+                {isSubmitting
+                  ? "Entering Sanctuary…"
+                  : mode === "login"
+                    ? "Enter Sanctuary"
+                    : "Create Account"}
               </button>
 
               <button
@@ -117,11 +161,11 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
               </button>
 
               <div className="flex justify-between items-center text-xs text-[#c4c7c7] pt-2">
-                {mode === 'login' ? (
+                {mode === "login" ? (
                   <>
                     <button
                       type="button"
-                      onClick={() => setActiveTab('register')}
+                      onClick={() => setActiveTab("register")}
                       className="hover:text-[#e5e2e1] transition-colors"
                     >
                       Need an account? Register
@@ -137,7 +181,7 @@ export const AuthViews: React.FC<AuthViewsProps> = ({
                 ) : (
                   <button
                     type="button"
-                    onClick={() => setActiveTab('login')}
+                    onClick={() => setActiveTab("login")}
                     className="w-full text-center hover:text-[#e5e2e1] transition-colors"
                   >
                     Already have an account? Log In

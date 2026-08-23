@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { DayPlan, Meal, ActiveTab } from '../types';
+import React, { useState } from "react";
+import { motion } from "motion/react";
+import { DayPlan, Meal, ActiveTab } from "../types";
 
 interface WeeklyPlannerViewProps {
   weekPlan: DayPlan[];
@@ -15,21 +15,27 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
   setWeekPlan,
   availableMeals,
   setActiveTab,
-  onSelectMeal
+  onSelectMeal,
 }) => {
   const [weekOffset, setWeekOffset] = useState(0);
   const [activeSlotModal, setActiveSlotModal] = useState<{
     dayIndex: number;
-    slotKey: 'breakfast' | 'lunch' | 'snack' | 'dinner';
+    slotKey: "breakfast" | "lunch" | "snack" | "dinner";
   } | null>(null);
 
   const getDaySlots = (day: DayPlan) => {
-    const list = [day.slots.breakfast, day.slots.lunch, day.slots.snack, day.slots.dinner];
+    const list = [
+      day.slots.breakfast,
+      day.slots.lunch,
+      day.slots.snack,
+      day.slots.dinner,
+    ];
     return list.filter((s): s is NonNullable<typeof s> => s !== undefined);
   };
 
   // Compute overall weekly averages
-  const totalDaysWithMeals = weekPlan.filter((d) => getDaySlots(d).length > 0).length || 1;
+  const totalDaysWithMeals =
+    weekPlan.filter((d) => getDaySlots(d).length > 0).length || 1;
 
   const sumKcal = weekPlan.reduce((acc, day) => {
     const dayKcal = getDaySlots(day).reduce((s, slot) => s + slot.kcal, 0);
@@ -73,9 +79,9 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             kcal: meal.kcal,
             protein: meal.protein,
             carbs: meal.carbs,
-            fat: meal.fat
-          }
-        }
+            fat: meal.fat,
+          },
+        },
       };
       return copy;
     });
@@ -85,7 +91,7 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
 
   const handleRemoveSlot = (
     dayIndex: number,
-    slotKey: 'breakfast' | 'lunch' | 'snack' | 'dinner'
+    slotKey: "breakfast" | "lunch" | "snack" | "dinner",
   ) => {
     setWeekPlan((prev) => {
       const copy = [...prev];
@@ -93,7 +99,7 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
       delete newSlots[slotKey];
       copy[dayIndex] = {
         ...copy[dayIndex],
-        slots: newSlots
+        slots: newSlots,
       };
       return copy;
     });
@@ -104,21 +110,53 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
       availableMeals.find((m) => m.type.toLowerCase() === type.toLowerCase()) ||
       availableMeals[0];
 
-    const b = randomMeal('breakfast');
-    const l = randomMeal('lunch');
-    const s = randomMeal('snack');
-    const d = randomMeal('dinner');
+    const b = randomMeal("breakfast");
+    const l = randomMeal("lunch");
+    const s = randomMeal("snack");
+    const d = randomMeal("dinner");
 
     setWeekPlan((prev) => {
       const copy = [...prev];
       copy[dayIndex] = {
         ...copy[dayIndex],
         slots: {
-          breakfast: { id: `af-b-${Date.now()}`, title: b.title, type: 'Breakfast', kcal: b.kcal, protein: b.protein, carbs: b.carbs, fat: b.fat },
-          lunch: { id: `af-l-${Date.now()}`, title: l.title, type: 'Lunch', kcal: l.kcal, protein: l.protein, carbs: l.carbs, fat: l.fat },
-          snack: { id: `af-s-${Date.now()}`, title: s.title, type: 'Snack', kcal: s.kcal, protein: s.protein, carbs: s.carbs, fat: s.fat },
-          dinner: { id: `af-d-${Date.now()}`, title: d.title, type: 'Dinner', kcal: d.kcal, protein: d.protein, carbs: d.carbs, fat: d.fat }
-        }
+          breakfast: {
+            id: `af-b-${Date.now()}`,
+            title: b.title,
+            type: "Breakfast",
+            kcal: b.kcal,
+            protein: b.protein,
+            carbs: b.carbs,
+            fat: b.fat,
+          },
+          lunch: {
+            id: `af-l-${Date.now()}`,
+            title: l.title,
+            type: "Lunch",
+            kcal: l.kcal,
+            protein: l.protein,
+            carbs: l.carbs,
+            fat: l.fat,
+          },
+          snack: {
+            id: `af-s-${Date.now()}`,
+            title: s.title,
+            type: "Snack",
+            kcal: s.kcal,
+            protein: s.protein,
+            carbs: s.carbs,
+            fat: s.fat,
+          },
+          dinner: {
+            id: `af-d-${Date.now()}`,
+            title: d.title,
+            type: "Dinner",
+            kcal: d.kcal,
+            protein: d.protein,
+            carbs: d.carbs,
+            fat: d.fat,
+          },
+        },
       };
       return copy;
     });
@@ -135,7 +173,8 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
           WEEKLY PLANNER
         </h2>
         <p className="text-[#c4c7c7] font-body-lg text-base md:text-lg font-light">
-          Plan your meals in advance. Balance daily caloric intake and macros across the week.
+          Plan your meals in advance. Balance daily caloric intake and macros
+          across the week.
         </p>
 
         {/* Week Navigation */}
@@ -144,17 +183,21 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             onClick={() => setWeekOffset((prev) => prev - 1)}
             className="flex items-center space-x-2 text-[#c4c7c7] hover:text-[#e5e2e1] transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
-            <span className="font-label-caps text-xs uppercase tracking-widest">Prev Week</span>
+            <span className="material-symbols-outlined text-sm">
+              arrow_back
+            </span>
+            <span className="font-label-caps text-xs uppercase tracking-widest">
+              Prev Week
+            </span>
           </button>
 
           <div className="flex items-center space-x-6">
             <span className="font-body-md text-sm md:text-base text-[#e5e2e1] tracking-wide font-medium">
               {weekOffset === 0
-                ? 'August 24 – 30, 2026'
+                ? "August 24 – 30, 2026"
                 : weekOffset > 0
-                ? `Week +${weekOffset} (Future Cycle)`
-                : `Week ${weekOffset} (Past Cycle)`}
+                  ? `Week +${weekOffset} (Future Cycle)`
+                  : `Week ${weekOffset} (Past Cycle)`}
             </span>
             <button
               onClick={() => setWeekOffset(0)}
@@ -168,8 +211,12 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             onClick={() => setWeekOffset((prev) => prev + 1)}
             className="flex items-center space-x-2 text-[#c4c7c7] hover:text-[#e5e2e1] transition-colors"
           >
-            <span className="font-label-caps text-xs uppercase tracking-widest">Next Week</span>
-            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+            <span className="font-label-caps text-xs uppercase tracking-widest">
+              Next Week
+            </span>
+            <span className="material-symbols-outlined text-sm">
+              arrow_forward
+            </span>
           </button>
         </div>
       </header>
@@ -183,7 +230,11 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             const dayPro = slotsList.reduce((s, slot) => s + slot.protein, 0);
             const dayCarbs = slotsList.reduce((s, slot) => s + slot.carbs, 0);
             const dayFat = slotsList.reduce((s, slot) => s + slot.fat, 0);
-            const isEmpty = !day.slots.breakfast && !day.slots.lunch && !day.slots.snack && !day.slots.dinner;
+            const isEmpty =
+              !day.slots.breakfast &&
+              !day.slots.lunch &&
+              !day.slots.snack &&
+              !day.slots.dinner;
 
             return (
               <div
@@ -196,7 +247,9 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
                     <h3 className="text-base text-[#e5e2e1] font-medium">
                       {day.dayName}
                     </h3>
-                    <p className="text-[#8e9191] text-[11px] uppercase font-label-caps mt-0.5">{day.dateLabel}</p>
+                    <p className="text-[#8e9191] text-[11px] uppercase font-label-caps mt-0.5">
+                      {day.dateLabel}
+                    </p>
                   </div>
                   {isEmpty ? (
                     <button
@@ -206,83 +259,116 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
                       Autofill
                     </button>
                   ) : (
-                    <span className="font-data-highlight text-sm text-[#e5e2e1]">{dayKcal} kcal</span>
+                    <span className="font-data-highlight text-sm text-[#e5e2e1]">
+                      {dayKcal} kcal
+                    </span>
                   )}
                 </div>
 
                 {/* Slots: Breakfast, Lunch, Snack, Dinner */}
                 <div className="space-y-3 flex-grow">
-                  {(['breakfast', 'lunch', 'snack', 'dinner'] as const).map((slotKey) => {
-                    const slotData = day.slots[slotKey];
-                    const slotLabel = slotKey.charAt(0).toUpperCase() + slotKey.slice(1);
+                  {(["breakfast", "lunch", "snack", "dinner"] as const).map(
+                    (slotKey) => {
+                      const slotData = day.slots[slotKey];
+                      const slotLabel =
+                        slotKey.charAt(0).toUpperCase() + slotKey.slice(1);
 
-                    return (
-                      <div key={slotKey} className="border-b border-[#444748]/15 pb-2.5 last:border-0">
-                        <div className="flex justify-between items-center mb-1">
-                          <h4 className="font-label-caps text-[10px] text-[#8e9191] uppercase tracking-wider">
-                            {slotLabel}
-                          </h4>
-                          {slotData && (
-                            <button
-                              onClick={() => handleRemoveSlot(dayIndex, slotKey)}
-                              className="text-[#8e9191] hover:text-[#ffb4ab] text-[11px]"
-                              title="Clear slot"
-                            >
-                              ✕
-                            </button>
-                          )}
-                        </div>
+                      return (
+                        <div
+                          key={slotKey}
+                          className="border-b border-[#444748]/15 pb-2.5 last:border-0"
+                        >
+                          <div className="flex justify-between items-center mb-1">
+                            <h4 className="font-label-caps text-[10px] text-[#8e9191] uppercase tracking-wider">
+                              {slotLabel}
+                            </h4>
+                            {slotData && (
+                              <button
+                                onClick={() =>
+                                  handleRemoveSlot(dayIndex, slotKey)
+                                }
+                                className="text-[#8e9191] hover:text-[#ffb4ab] text-[11px]"
+                                title="Clear slot"
+                              >
+                                ✕
+                              </button>
+                            )}
+                          </div>
 
-                        {slotData ? (
-                          <motion.div
-                            layoutId={availableMeals.find((m) => m.title === slotData.title)?.id ? `meal-card-${availableMeals.find((m) => m.title === slotData.title)?.id}` : undefined}
-                            onClick={() => {
-                              const found = availableMeals.find((m) => m.title === slotData.title);
-                              if (found) {
-                                onSelectMeal(found);
-                                setActiveTab('meal-detail');
+                          {slotData ? (
+                            <motion.div
+                              layoutId={
+                                availableMeals.find(
+                                  (m) => m.title === slotData.title,
+                                )?.id
+                                  ? `meal-card-${availableMeals.find((m) => m.title === slotData.title)?.id}`
+                                  : undefined
                               }
-                            }}
-                            className="p-2.5 border border-[#444748]/30 bg-[#201f1f] hover:border-[#bacbbc]/60 transition-colors rounded cursor-pointer group"
-                          >
-                            <div className="flex justify-between items-start mb-0.5">
-                              <motion.span layoutId={availableMeals.find((m) => m.title === slotData.title)?.id ? `meal-name-${availableMeals.find((m) => m.title === slotData.title)?.id}` : undefined} className="text-[13px] text-[#e5e2e1] group-hover:text-[#bacbbc] transition-colors line-clamp-1 font-medium">
-                                {slotData.title}
-                              </motion.span>
-                              <span className="font-data-highlight text-[12px] text-[#e5e2e1] shrink-0 ml-2">
-                                {slotData.kcal}
+                              onClick={() => {
+                                const found = availableMeals.find(
+                                  (m) => m.title === slotData.title,
+                                );
+                                if (found) {
+                                  onSelectMeal(found);
+                                  setActiveTab("meal-detail");
+                                }
+                              }}
+                              className="p-2.5 border border-[#444748]/30 bg-[#201f1f] hover:border-[#bacbbc]/60 transition-colors rounded cursor-pointer group"
+                            >
+                              <div className="flex justify-between items-start mb-0.5">
+                                <motion.span
+                                  layoutId={
+                                    availableMeals.find(
+                                      (m) => m.title === slotData.title,
+                                    )?.id
+                                      ? `meal-name-${availableMeals.find((m) => m.title === slotData.title)?.id}`
+                                      : undefined
+                                  }
+                                  className="text-[13px] text-[#e5e2e1] group-hover:text-[#bacbbc] transition-colors line-clamp-1 font-medium"
+                                >
+                                  {slotData.title}
+                                </motion.span>
+                                <span className="font-data-highlight text-[12px] text-[#e5e2e1] shrink-0 ml-2">
+                                  {slotData.kcal}
+                                </span>
+                              </div>
+                              <div className="flex space-x-1.5 text-[11px] text-[#8e9191]">
+                                <span>{slotData.protein}g P</span>
+                                <span>·</span>
+                                <span>{slotData.carbs}g C</span>
+                                <span>·</span>
+                                <span>{slotData.fat}g F</span>
+                              </div>
+                            </motion.div>
+                          ) : (
+                            <div
+                              onClick={() =>
+                                setActiveSlotModal({ dayIndex, slotKey })
+                              }
+                              className="py-2.5 text-center text-[#8e9191] border border-dashed border-[#444748]/30 hover:border-[#bacbbc]/50 hover:text-[#e5e2e1] transition-colors cursor-pointer rounded flex items-center justify-center gap-1.5"
+                            >
+                              <span className="material-symbols-outlined text-[14px]">
+                                add
+                              </span>
+                              <span className="text-[11px] uppercase tracking-wider font-medium">
+                                Plan {slotLabel}
                               </span>
                             </div>
-                            <div className="flex space-x-1.5 text-[11px] text-[#8e9191]">
-                              <span>{slotData.protein}g P</span>
-                              <span>·</span>
-                              <span>{slotData.carbs}g C</span>
-                              <span>·</span>
-                              <span>{slotData.fat}g F</span>
-                            </div>
-                          </motion.div>
-                        ) : (
-                          <div
-                            onClick={() => setActiveSlotModal({ dayIndex, slotKey })}
-                            className="py-2.5 text-center text-[#8e9191] border border-dashed border-[#444748]/30 hover:border-[#bacbbc]/50 hover:text-[#e5e2e1] transition-colors cursor-pointer rounded flex items-center justify-center gap-1.5"
-                          >
-                            <span className="material-symbols-outlined text-[14px]">add</span>
-                            <span className="text-[11px] uppercase tracking-wider font-medium">
-                              Plan {slotLabel}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
+                          )}
+                        </div>
+                      );
+                    },
+                  )}
                 </div>
 
                 {/* Daily Totals Footer */}
                 <div className="mt-4 pt-3 border-t border-[#444748]/20">
                   <div className="flex justify-between items-center text-[12px]">
-                    <span className="text-[#8e9191] uppercase font-label-caps">Day Total</span>
+                    <span className="text-[#8e9191] uppercase font-label-caps">
+                      Day Total
+                    </span>
                     <span className="font-data-highlight text-[#e5e2e1] text-sm">
-                      {dayKcal.toLocaleString('en-US')} kcal
+                      {dayKcal.toLocaleString("en-US")} kcal
                     </span>
                   </div>
                   <div className="flex justify-between items-center mt-1 text-[11px] text-[#8e9191]">
@@ -306,7 +392,9 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             Weekly Average Target
           </h3>
           <p className="flex items-baseline gap-2">
-            <span className="font-data-highlight text-[#e5e2e1] text-3xl">{avgKcal.toLocaleString('en-US')}</span>{' '}
+            <span className="font-data-highlight text-[#e5e2e1] text-3xl">
+              {avgKcal.toLocaleString("en-US")}
+            </span>{" "}
             <span className="text-[13px] text-[#c4c7c7]">kcal / day</span>
           </p>
         </div>
@@ -316,24 +404,30 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
             <span className="block text-[10px] font-label-caps text-[#8e9191] uppercase tracking-wider mb-0.5">
               Avg Protein
             </span>
-            <span className="font-data-highlight text-lg text-[#e5e2e1]">{avgProtein}g</span>
+            <span className="font-data-highlight text-lg text-[#e5e2e1]">
+              {avgProtein}g
+            </span>
           </div>
           <div>
             <span className="block text-[10px] font-label-caps text-[#8e9191] uppercase tracking-wider mb-0.5">
               Avg Carbs
             </span>
-            <span className="font-data-highlight text-lg text-[#e5e2e1]">{avgCarbs}g</span>
+            <span className="font-data-highlight text-lg text-[#e5e2e1]">
+              {avgCarbs}g
+            </span>
           </div>
           <div>
             <span className="block text-[10px] font-label-caps text-[#8e9191] uppercase tracking-wider mb-0.5">
               Avg Fats
             </span>
-            <span className="font-data-highlight text-lg text-[#e5e2e1]">{avgFat}g</span>
+            <span className="font-data-highlight text-lg text-[#e5e2e1]">
+              {avgFat}g
+            </span>
           </div>
         </div>
 
         <button
-          onClick={() => setActiveTab('meals')}
+          onClick={() => setActiveTab("meals")}
           className="bg-[#9E8E77] hover:bg-[#b0a08b] text-[#141313] text-[12px] font-medium uppercase tracking-wider px-5 py-2.5 rounded-full transition-colors"
         >
           Create Meal
@@ -361,7 +455,9 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
                 onClick={() => setActiveSlotModal(null)}
                 className="text-[#c4c7c7] hover:text-[#e5e2e1]"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <span className="material-symbols-outlined text-[20px]">
+                  close
+                </span>
               </button>
             </div>
 
@@ -381,10 +477,13 @@ export const WeeklyPlannerView: React.FC<WeeklyPlannerViewProps> = ({
                       {meal.title}
                     </h4>
                     <span className="font-label-caps text-[10px] text-[#c4c7c7]">
-                      {meal.type} • {meal.protein}P • {meal.carbs}C • {meal.fat}F
+                      {meal.type} • {meal.protein}P • {meal.carbs}C • {meal.fat}
+                      F
                     </span>
                   </div>
-                  <span className="italic-data text-sm text-[#bacbbc]">{meal.kcal} kcal</span>
+                  <span className="italic-data text-sm text-[#bacbbc]">
+                    {meal.kcal} kcal
+                  </span>
                 </div>
               ))}
             </div>

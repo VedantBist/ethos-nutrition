@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import { HISTORY_ENTRIES_7_DAYS, HISTORY_ENTRIES_30_DAYS } from '../data/initialData';
-import { UserProfile, ActiveTab } from '../types';
+import React, { useState } from "react";
+import {
+  HISTORY_ENTRIES_7_DAYS,
+  HISTORY_ENTRIES_30_DAYS,
+} from "../data/initialData";
+import { UserProfile, ActiveTab } from "../types";
 
 interface VitalsHistoryViewProps {
   userProfile: UserProfile;
@@ -9,9 +12,9 @@ interface VitalsHistoryViewProps {
 
 export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
   userProfile,
-  setActiveTab
+  setActiveTab,
 }) => {
-  const [timeframe, setTimeframe] = useState<'7' | '30' | '90'>('7');
+  const [timeframe, setTimeframe] = useState<"7" | "30" | "90">("7");
   const [hoveredPoint, setHoveredPoint] = useState<{
     day: string;
     date: string;
@@ -21,11 +24,18 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
     fat: number;
   } | null>(null);
 
-  const data = timeframe === '7' ? HISTORY_ENTRIES_7_DAYS : HISTORY_ENTRIES_30_DAYS;
+  const data =
+    timeframe === "7" ? HISTORY_ENTRIES_7_DAYS : HISTORY_ENTRIES_30_DAYS;
 
-  const avgKcal = Math.round(data.reduce((s, d) => s + d.kcal, 0) / data.length);
-  const avgPro = Math.round(data.reduce((s, d) => s + d.protein, 0) / data.length);
-  const avgCarbs = Math.round(data.reduce((s, d) => s + d.carbs, 0) / data.length);
+  const avgKcal = Math.round(
+    data.reduce((s, d) => s + d.kcal, 0) / data.length,
+  );
+  const avgPro = Math.round(
+    data.reduce((s, d) => s + d.protein, 0) / data.length,
+  );
+  const avgCarbs = Math.round(
+    data.reduce((s, d) => s + d.carbs, 0) / data.length,
+  );
   const avgFat = Math.round(data.reduce((s, d) => s + d.fat, 0) / data.length);
 
   // SVG Chart Calculations
@@ -37,17 +47,24 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
   const points = data.map((d, index) => {
     const x = (index / (data.length - 1)) * (chartWidth - 80) + 40;
     const normalizedY = 1 - (d.kcal - minKcal) / (maxKcal - minKcal);
-    const y = Math.max(30, Math.min(chartHeight - 30, normalizedY * (chartHeight - 60) + 30));
+    const y = Math.max(
+      30,
+      Math.min(chartHeight - 30, normalizedY * (chartHeight - 60) + 30),
+    );
     return { ...d, x, y };
   });
 
   const pathD = points.reduce((acc, pt, i) => {
     return i === 0 ? `M ${pt.x},${pt.y}` : `${acc} L ${pt.x},${pt.y}`;
-  }, '');
+  }, "");
 
   // Target line Y
-  const targetNormY = 1 - (userProfile.targetKcal - minKcal) / (maxKcal - minKcal);
-  const targetY = Math.max(30, Math.min(chartHeight - 30, targetNormY * (chartHeight - 60) + 30));
+  const targetNormY =
+    1 - (userProfile.targetKcal - minKcal) / (maxKcal - minKcal);
+  const targetY = Math.max(
+    30,
+    Math.min(chartHeight - 30, targetNormY * (chartHeight - 60) + 30),
+  );
 
   return (
     <div className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 flex flex-col gap-12 animate-fade-in">
@@ -68,31 +85,31 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
         {/* Timeframe selector */}
         <div className="flex space-x-6 border-b border-[#444748]/30 pb-1">
           <button
-            onClick={() => setTimeframe('7')}
+            onClick={() => setTimeframe("7")}
             className={`font-label-caps text-xs tracking-widest pb-1 transition-all ${
-              timeframe === '7'
-                ? 'text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold'
-                : 'text-[#c4c7c7] hover:text-[#e5e2e1]'
+              timeframe === "7"
+                ? "text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold"
+                : "text-[#c4c7c7] hover:text-[#e5e2e1]"
             }`}
           >
             7 DAYS
           </button>
           <button
-            onClick={() => setTimeframe('30')}
+            onClick={() => setTimeframe("30")}
             className={`font-label-caps text-xs tracking-widest pb-1 transition-all ${
-              timeframe === '30'
-                ? 'text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold'
-                : 'text-[#c4c7c7] hover:text-[#e5e2e1]'
+              timeframe === "30"
+                ? "text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold"
+                : "text-[#c4c7c7] hover:text-[#e5e2e1]"
             }`}
           >
             30 DAYS
           </button>
           <button
-            onClick={() => setTimeframe('90')}
+            onClick={() => setTimeframe("90")}
             className={`font-label-caps text-xs tracking-widest pb-1 transition-all ${
-              timeframe === '90'
-                ? 'text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold'
-                : 'text-[#c4c7c7] hover:text-[#e5e2e1]'
+              timeframe === "90"
+                ? "text-[#e5e2e1] border-b-2 border-[#bacbbc] font-bold"
+                : "text-[#c4c7c7] hover:text-[#e5e2e1]"
             }`}
           >
             90 DAYS
@@ -107,17 +124,22 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
             Average Energy
           </span>
           <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="font-data-highlight text-3xl text-[#e5e2e1]">{avgKcal.toLocaleString('en-US')}</span>
+            <span className="font-data-highlight text-3xl text-[#e5e2e1]">
+              {avgKcal.toLocaleString("en-US")}
+            </span>
             <span className="text-[13px] text-[#c4c7c7]">kcal / day</span>
           </div>
         </div>
 
         <div>
           <span className="font-label-caps text-[11px] text-[#8e9191] uppercase tracking-wider flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#bacbbc]" /> Avg Protein
+            <span className="w-1.5 h-1.5 rounded-full bg-[#bacbbc]" /> Avg
+            Protein
           </span>
           <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="font-data-highlight text-2xl text-[#e5e2e1]">{avgPro}g</span>
+            <span className="font-data-highlight text-2xl text-[#e5e2e1]">
+              {avgPro}g
+            </span>
             <span className="text-[13px] text-[#c4c7c7]">/ day</span>
           </div>
         </div>
@@ -127,7 +149,9 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
             <span className="w-1.5 h-1.5 rounded-full bg-[#9E8E77]" /> Avg Carbs
           </span>
           <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="font-data-highlight text-2xl text-[#e5e2e1]">{avgCarbs}g</span>
+            <span className="font-data-highlight text-2xl text-[#e5e2e1]">
+              {avgCarbs}g
+            </span>
             <span className="text-[13px] text-[#c4c7c7]">/ day</span>
           </div>
         </div>
@@ -137,7 +161,9 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
             <span className="w-1.5 h-1.5 rounded-full bg-[#8e9192]" /> Avg Fats
           </span>
           <div className="flex items-baseline gap-1.5 mt-1">
-            <span className="font-data-highlight text-2xl text-[#e5e2e1]">{avgFat}g</span>
+            <span className="font-data-highlight text-2xl text-[#e5e2e1]">
+              {avgFat}g
+            </span>
             <span className="text-[13px] text-[#c4c7c7]">/ day</span>
           </div>
         </div>
@@ -154,7 +180,8 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
               <span className="w-2.5 h-0.5 bg-[#c8c6c5]" /> Ingested
             </span>
             <span className="flex items-center gap-1.5 text-[#bacbbc]">
-              <span className="w-2.5 h-0.5 border-t border-dashed border-[#bacbbc]" /> Target ({userProfile.targetKcal} kcal)
+              <span className="w-2.5 h-0.5 border-t border-dashed border-[#bacbbc]" />{" "}
+              Target ({userProfile.targetKcal} kcal)
             </span>
           </div>
         </div>
@@ -167,9 +194,30 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
             preserveAspectRatio="none"
           >
             {/* Horizontal Grid lines */}
-            <line x1="40" y1="50" x2={chartWidth - 40} y2="50" stroke="rgba(229, 226, 225, 0.05)" strokeWidth="1" />
-            <line x1="40" y1="120" x2={chartWidth - 40} y2="120" stroke="rgba(229, 226, 225, 0.05)" strokeWidth="1" />
-            <line x1="40" y1="190" x2={chartWidth - 40} y2="190" stroke="rgba(229, 226, 225, 0.05)" strokeWidth="1" />
+            <line
+              x1="40"
+              y1="50"
+              x2={chartWidth - 40}
+              y2="50"
+              stroke="rgba(229, 226, 225, 0.05)"
+              strokeWidth="1"
+            />
+            <line
+              x1="40"
+              y1="120"
+              x2={chartWidth - 40}
+              y2="120"
+              stroke="rgba(229, 226, 225, 0.05)"
+              strokeWidth="1"
+            />
+            <line
+              x1="40"
+              y1="190"
+              x2={chartWidth - 40}
+              y2="190"
+              stroke="rgba(229, 226, 225, 0.05)"
+              strokeWidth="1"
+            />
 
             {/* Target Line */}
             <line
@@ -241,13 +289,26 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
             Macro Calibration Ratio
           </h4>
           <p className="font-body-md text-xs text-[#c4c7c7] font-light mb-6">
-            Proportional split of ingested macro energy across the active timeframe.
+            Proportional split of ingested macro energy across the active
+            timeframe.
           </p>
 
           <div className="w-full h-3 rounded-full bg-[#201f1f] flex overflow-hidden mb-4">
-            <div style={{ width: '25%' }} className="bg-[#bacbbc]" title="Protein (25%)" />
-            <div style={{ width: '50%' }} className="bg-[#9E8E77]" title="Carbohydrates (50%)" />
-            <div style={{ width: '25%' }} className="bg-[#8e9192]" title="Fats (25%)" />
+            <div
+              style={{ width: "25%" }}
+              className="bg-[#bacbbc]"
+              title="Protein (25%)"
+            />
+            <div
+              style={{ width: "50%" }}
+              className="bg-[#9E8E77]"
+              title="Carbohydrates (50%)"
+            />
+            <div
+              style={{ width: "25%" }}
+              className="bg-[#8e9192]"
+              title="Fats (25%)"
+            />
           </div>
 
           <div className="flex justify-between text-xs font-label-caps text-[#c4c7c7]">
@@ -269,11 +330,12 @@ export const HistoryView: React.FC<VitalsHistoryViewProps> = ({
               Goal Adherence Index
             </h4>
             <p className="font-body-md text-xs text-[#c4c7c7] font-light mb-4">
-              93.4% of logged days maintained within ±10% of prescribed caloric target.
+              93.4% of logged days maintained within ±10% of prescribed caloric
+              target.
             </p>
           </div>
           <button
-            onClick={() => setActiveTab('profile')}
+            onClick={() => setActiveTab("profile")}
             className="w-fit font-label-caps text-xs text-[#bacbbc] hover:text-[#e5e2e1] uppercase tracking-widest border-b border-[#bacbbc]/40 pb-1"
           >
             Adjust Target Nutrition →

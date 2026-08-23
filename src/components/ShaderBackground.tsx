@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 export const ShaderBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -7,7 +7,7 @@ export const ShaderBackground: React.FC = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const gl = canvas.getContext('webgl');
+    const gl = canvas.getContext("webgl");
     if (!gl) return;
 
     let animationFrameId: number;
@@ -19,7 +19,7 @@ export const ShaderBackground: React.FC = () => {
       gl.viewport(0, 0, canvas.width, canvas.height);
     };
 
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     const vertexShaderSource = `
@@ -90,7 +90,11 @@ export const ShaderBackground: React.FC = () => {
       }
     `;
 
-    function createShader(glCtx: WebGLRenderingContext, type: number, source: string) {
+    function createShader(
+      glCtx: WebGLRenderingContext,
+      type: number,
+      source: string,
+    ) {
       const shader = glCtx.createShader(type);
       if (!shader) return null;
       glCtx.shaderSource(shader, source);
@@ -103,7 +107,11 @@ export const ShaderBackground: React.FC = () => {
     }
 
     const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
+    const fragmentShader = createShader(
+      gl,
+      gl.FRAGMENT_SHADER,
+      fragmentShaderSource,
+    );
     if (!vertexShader || !fragmentShader) return;
 
     const program = gl.createProgram();
@@ -115,12 +123,7 @@ export const ShaderBackground: React.FC = () => {
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     const positions = new Float32Array([
-      -1.0, -1.0,
-       1.0, -1.0,
-      -1.0,  1.0,
-      -1.0,  1.0,
-       1.0, -1.0,
-       1.0,  1.0,
+      -1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0,
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
 
@@ -145,7 +148,7 @@ export const ShaderBackground: React.FC = () => {
     animationFrameId = requestAnimationFrame(render);
 
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

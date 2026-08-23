@@ -1,38 +1,53 @@
-import React, { useState } from 'react';
-import { FoodItem, LoggedFoodItem } from '../types';
+import React, { useState } from "react";
+import { FoodItem, LoggedFoodItem } from "../types";
 
 interface QuickLogModalProps {
   isOpen: boolean;
   onClose: () => void;
   availableFoods: FoodItem[];
-  defaultMealSlot?: 'breakfast' | 'lunch' | 'snack' | 'dinner';
-  onAddLogItem: (mealSlot: 'breakfast' | 'lunch' | 'snack' | 'dinner', item: LoggedFoodItem) => void;
+  defaultMealSlot?: "breakfast" | "lunch" | "snack" | "dinner";
+  onAddLogItem: (
+    mealSlot: "breakfast" | "lunch" | "snack" | "dinner",
+    item: LoggedFoodItem,
+  ) => void;
 }
 
 export const QuickLogModal: React.FC<QuickLogModalProps> = ({
   isOpen,
   onClose,
   availableFoods,
-  defaultMealSlot = 'lunch',
-  onAddLogItem
+  defaultMealSlot = "lunch",
+  onAddLogItem,
 }) => {
-  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(availableFoods[0] || null);
-  const [customName, setCustomName] = useState('');
+  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(
+    availableFoods[0] || null,
+  );
+  const [customName, setCustomName] = useState("");
   const [amountGrams, setAmountGrams] = useState(100);
-  const [mealSlot, setMealSlot] = useState<'breakfast' | 'lunch' | 'snack' | 'dinner'>(defaultMealSlot);
-  const [searchFilter, setSearchFilter] = useState('');
+  const [mealSlot, setMealSlot] = useState<
+    "breakfast" | "lunch" | "snack" | "dinner"
+  >(defaultMealSlot);
+  const [searchFilter, setSearchFilter] = useState("");
 
   if (!isOpen) return null;
 
   const currentFood = selectedFood;
   const ratio = (amountGrams || 0) / 100;
-  const computedKcal = currentFood ? Math.round(currentFood.kcalPer100g * ratio) : 0;
-  const computedPro = currentFood ? Math.round(currentFood.proteinPer100g * ratio) : 0;
-  const computedCarbs = currentFood ? Math.round(currentFood.carbsPer100g * ratio) : 0;
-  const computedFat = currentFood ? Math.round(currentFood.fatPer100g * ratio) : 0;
+  const computedKcal = currentFood
+    ? Math.round(currentFood.kcalPer100g * ratio)
+    : 0;
+  const computedPro = currentFood
+    ? Math.round(currentFood.proteinPer100g * ratio)
+    : 0;
+  const computedCarbs = currentFood
+    ? Math.round(currentFood.carbsPer100g * ratio)
+    : 0;
+  const computedFat = currentFood
+    ? Math.round(currentFood.fatPer100g * ratio)
+    : 0;
 
   const filteredFoods = availableFoods.filter((f) =>
-    f.name.toLowerCase().includes(searchFilter.toLowerCase())
+    f.name.toLowerCase().includes(searchFilter.toLowerCase()),
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -42,13 +57,13 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
     const newItem: LoggedFoodItem = {
       id: `log-${Date.now()}`,
       foodId: currentFood?.id,
-      name: customName || currentFood?.name || 'Custom Food',
+      name: customName || currentFood?.name || "Custom Food",
       amountText: `${amountGrams}g`,
       amountGrams: amountGrams,
       kcal: computedKcal,
       protein: computedPro,
       carbs: computedCarbs,
-      fat: computedFat
+      fat: computedFat,
     };
 
     onAddLogItem(mealSlot, newItem);
@@ -67,7 +82,9 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl z-[100] bg-[#1a1a1a] border border-[#444748]/40 rounded-2xl p-6 md:p-8 shadow-2xl animate-fade-in">
         <div className="flex justify-between items-center border-b border-[#444748]/30 pb-4 mb-6">
           <div>
-            <h3 className="font-headline-sm text-2xl text-[#e5e2e1]">Log Food</h3>
+            <h3 className="font-headline-sm text-2xl text-[#e5e2e1]">
+              Log Food
+            </h3>
             <p className="font-label-caps text-xs text-[#bacbbc] uppercase tracking-wider mt-0.5">
               Record Food Entry
             </p>
@@ -87,20 +104,22 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
               Meal Destination
             </label>
             <div className="grid grid-cols-4 gap-2">
-              {(['breakfast', 'lunch', 'snack', 'dinner'] as const).map((slot) => (
-                <button
-                  key={slot}
-                  type="button"
-                  onClick={() => setMealSlot(slot)}
-                  className={`py-2 rounded-lg font-label-caps text-xs capitalize transition-all ${
-                    mealSlot === slot
-                      ? 'bg-[#bacbbc] text-[#141313] font-semibold shadow-sm'
-                      : 'border border-[#444748]/30 text-[#c4c7c7] hover:bg-[#201f1f]'
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
+              {(["breakfast", "lunch", "snack", "dinner"] as const).map(
+                (slot) => (
+                  <button
+                    key={slot}
+                    type="button"
+                    onClick={() => setMealSlot(slot)}
+                    className={`py-2 rounded-lg font-label-caps text-xs capitalize transition-all ${
+                      mealSlot === slot
+                        ? "bg-[#bacbbc] text-[#141313] font-semibold shadow-sm"
+                        : "border border-[#444748]/30 text-[#c4c7c7] hover:bg-[#201f1f]"
+                    }`}
+                  >
+                    {slot}
+                  </button>
+                ),
+              )}
             </div>
           </div>
 
@@ -126,8 +145,8 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
                   }}
                   className={`p-2.5 rounded-lg border flex items-center justify-between cursor-pointer transition-all ${
                     selectedFood?.id === food.id
-                      ? 'border-[#bacbbc] bg-[#201f1f] text-[#e5e2e1]'
-                      : 'border-[#444748]/20 bg-[#141313]/60 text-[#c4c7c7] hover:bg-[#201f1f]/50'
+                      ? "border-[#bacbbc] bg-[#201f1f] text-[#e5e2e1]"
+                      : "border-[#444748]/20 bg-[#141313]/60 text-[#c4c7c7] hover:bg-[#201f1f]/50"
                   }`}
                 >
                   <span className="font-body-md text-sm">{food.name}</span>
@@ -141,14 +160,18 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
 
           {/* Amount In Grams */}
           <div className="flex items-center justify-between border-t border-b border-[#444748]/20 py-3">
-            <span className="font-body-md text-sm text-[#c4c7c7]">Portion (grams)</span>
+            <span className="font-body-md text-sm text-[#c4c7c7]">
+              Portion (grams)
+            </span>
             <div className="flex items-center gap-2">
               <input
                 type="number"
                 min="5"
                 step="5"
                 value={amountGrams}
-                onChange={(e) => setAmountGrams(parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  setAmountGrams(parseFloat(e.target.value) || 0)
+                }
                 className="w-20 bg-transparent text-right font-headline-sm text-xl text-[#e5e2e1] border-b border-[#444748]/50 focus:outline-none focus:border-[#bacbbc] p-0"
               />
               <span className="font-label-caps text-xs text-[#c4c7c7]">g</span>
@@ -158,7 +181,9 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({
           {/* Live Nutrition Computed Banner */}
           <div className="bg-[#141313] p-4 rounded-xl border border-[#444748]/30 flex justify-between items-center text-xs">
             <div className="flex flex-col">
-              <span className="font-label-caps text-[10px] text-[#c4c7c7] uppercase">Computed</span>
+              <span className="font-label-caps text-[10px] text-[#c4c7c7] uppercase">
+                Computed
+              </span>
               <span className="font-data-highlight text-xl text-[#e5e2e1]">
                 {computedKcal} kcal
               </span>

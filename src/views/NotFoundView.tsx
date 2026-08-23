@@ -1,5 +1,5 @@
-import React from 'react';
-import { ActiveTab } from '../types';
+import React from "react";
+import { ActiveTab } from "../types";
 
 interface NotFoundViewProps {
   setActiveTab: (tab: ActiveTab) => void;
@@ -20,14 +20,17 @@ export const NotFoundView: React.FC<NotFoundViewProps> = ({ setActiveTab }) => {
           That path isn't on today's plan.
         </p>
         <p className="font-body-lg text-sm text-[#c4c7c7] mb-8 font-light leading-relaxed">
-          The space you are looking for seems to have been thoughtfully moved or does not exist. Let's redirect your focus to your daily rhythm.
+          The space you are looking for seems to have been thoughtfully moved or
+          does not exist. Let's redirect your focus to your daily rhythm.
         </p>
         <button
-          onClick={() => setActiveTab('overview')}
+          onClick={() => setActiveTab("overview")}
           className="inline-flex items-center gap-2 px-8 py-4 bg-[#9E8E77] hover:bg-[#b0a08b] text-[#141313] font-label-caps text-xs uppercase tracking-widest rounded-full transition-all duration-300 shadow-xl hover:-translate-y-0.5"
         >
           <span>Return to Overview</span>
-          <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          <span className="material-symbols-outlined text-[18px]">
+            arrow_forward
+          </span>
         </button>
       </div>
     </div>
