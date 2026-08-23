@@ -1,0 +1,25 @@
+package com.vedant.ethosnutrition.entity;
+
+public enum Cuisine {
+  PAN_INDIAN,
+  NORTH_INDIAN,
+  SOUTH_INDIAN,
+  WEST_INDIAN,
+  EAST_INDIAN,
+  NORTH_EAST_INDIAN,
+  PUNJABI,
+  GUJARATI,
+  MAHARASHTRIAN,
+  RAJASTHANI,
+  BENGALI,
+  TAMIL,
+  KERALA,
+  KARNATAKA,
+  ANDHRA,
+  TELANGANA,
+  KASHMIRI,
+  GOAN,
+  BIHARI,
+  ODIA,
+  ASSAMESE,
+}
