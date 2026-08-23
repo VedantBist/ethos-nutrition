@@ -1,51 +1,52 @@
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { FoodItem, ActiveTab } from '../types';
+import React, { useState } from "react";
+import { motion } from "motion/react";
+import { FoodItem, ActiveTab } from "../types";
 
 interface FoodLibraryViewProps {
   foods: FoodItem[];
   setActiveTab: (tab: ActiveTab) => void;
   onSelectFood: (food: FoodItem) => void;
-  onQuickAddFood: (food: FoodItem, targetMeal: 'breakfast' | 'lunch' | 'snack' | 'dinner') => void;
+  onQuickAddFood: (
+    food: FoodItem,
+    targetMeal: "breakfast" | "lunch" | "snack" | "dinner",
+  ) => void;
 }
 
 export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
   foods,
   setActiveTab,
   onSelectFood,
-  onQuickAddFood
+  onQuickAddFood,
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [searchQuery, setSearchQuery] = useState("");
   const [quickAddOpenId, setQuickAddOpenId] = useState<string | null>(null);
 
   const categories = [
-    'All',
-    'Proteins',
-    'Grains & Staples',
-    'Dairy',
-    'Fruits',
-    'Vegetables',
-    'Legumes',
-    'Nuts & Seeds'
+    "All",
+    ...Array.from(new Set(foods.map((food) => food.category))).sort(),
   ];
 
   const filteredFoods = foods.filter((food) => {
-    const matchesCategory = selectedCategory === 'All' || food.category === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "All" || food.category === selectedCategory;
     const matchesSearch =
       food.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      food.subtitle.toLowerCase().includes(searchQuery.toLowerCase());
+      (food.subtitle ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (food.aliases ?? []).some((alias) =>
+        alias.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     return matchesCategory && matchesSearch;
   });
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 flex flex-col gap-12"
     >
       {/* Header */}
-      <motion.section 
+      <motion.section
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
@@ -59,12 +60,13 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
             FOOD LIBRARY
           </h2>
           <p className="font-body-lg text-[#c4c7c7] max-w-2xl font-light">
-            Explore whole foods, understand their complete nutritional composition, and integrate them into your daily plan.
+            Explore whole foods, understand their complete nutritional
+            composition, and integrate them into your daily plan.
           </p>
         </div>
 
         <button
-          onClick={() => setActiveTab('meals')}
+          onClick={() => setActiveTab("meals")}
           className="bg-[#9E8E77] hover:bg-[#b0a08b] text-[#141313] font-label-caps text-xs uppercase tracking-widest px-6 py-3 rounded-full transition-colors flex items-center gap-2 shrink-0 shadow-sm font-semibold"
         >
           <span className="material-symbols-outlined text-[18px]">palette</span>
@@ -73,7 +75,7 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
       </motion.section>
 
       {/* Search & Filter Section */}
-      <motion.section 
+      <motion.section
         initial={{ y: 15, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.15 }}
@@ -96,10 +98,12 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
             />
             {searchQuery && (
               <button
-                onClick={() => setSearchQuery('')}
+                onClick={() => setSearchQuery("")}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-[#8e9191] hover:text-[#e5e2e1] p-1.5"
               >
-                <span className="material-symbols-outlined text-[18px]">close</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  close
+                </span>
               </button>
             )}
           </div>
@@ -115,8 +119,8 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                 onClick={() => setSelectedCategory(cat)}
                 className={`text-[13px] font-medium px-3.5 py-1.5 rounded-full transition-colors ${
                   isSelected
-                    ? 'bg-[#252424] text-[#e5e2e1] border border-[#bacbbc]/40'
-                    : 'text-[#c4c7c7] hover:text-[#e5e2e1] hover:bg-[#1a1919]'
+                    ? "bg-[#252424] text-[#e5e2e1] border border-[#bacbbc]/40"
+                    : "text-[#c4c7c7] hover:text-[#e5e2e1] hover:bg-[#1a1919]"
                 }`}
               >
                 {cat}
@@ -127,7 +131,7 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
       </motion.section>
 
       {/* Food Archive Table */}
-      <motion.section 
+      <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
@@ -136,16 +140,26 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
         {/* Table Header */}
         <div className="grid grid-cols-12 gap-4 py-3 border-b border-[#444748]/30 text-[#8e9191] font-label-caps text-[11px] tracking-wider uppercase">
           <div className="col-span-6 md:col-span-4">Food Item</div>
-          <div className="col-span-3 md:col-span-2 text-right">Standard Serving</div>
-          <div className="col-span-3 md:col-span-2 text-right">Energy / 100g</div>
-          <div className="hidden md:block md:col-span-4 text-right">Macros (Protein / Carbs / Fat)</div>
+          <div className="col-span-3 md:col-span-2 text-right">
+            Standard Serving
+          </div>
+          <div className="col-span-3 md:col-span-2 text-right">
+            Energy / 100g
+          </div>
+          <div className="hidden md:block md:col-span-4 text-right">
+            Macros (Protein / Carbs / Fat)
+          </div>
         </div>
 
         {/* Rows */}
         {filteredFoods.length === 0 ? (
           <div className="py-16 text-center text-[#c4c7c7]">
-            <p className="font-headline-sm text-xl italic mb-2">No matching foods found</p>
-            <p className="text-sm font-light">Try searching for generic names like salmon, egg, or quinoa.</p>
+            <p className="font-headline-sm text-xl italic mb-2">
+              No matching foods found
+            </p>
+            <p className="text-sm font-light">
+              Try searching for generic names like salmon, egg, or quinoa.
+            </p>
           </div>
         ) : (
           <div className="divide-y divide-[#444748]/15">
@@ -159,15 +173,20 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                 <div
                   onClick={() => {
                     onSelectFood(food);
-                    setActiveTab('food-detail');
+                    setActiveTab("food-detail");
                   }}
                   className="col-span-6 md:col-span-4 flex items-center gap-3.5"
                 >
                   <div className="w-9 h-9 rounded bg-[#201f1f] border border-[#444748]/20 flex items-center justify-center text-[#bacbbc] shrink-0">
-                    <span className="material-symbols-outlined text-[18px]">{food.icon}</span>
+                    <span className="material-symbols-outlined text-[18px]">
+                      {food.icon}
+                    </span>
                   </div>
                   <div className="flex flex-col">
-                    <motion.span layoutId={`food-name-${food.id}`} className="text-[15px] text-[#e5e2e1] group-hover:text-[#bacbbc] transition-colors font-medium">
+                    <motion.span
+                      layoutId={`food-name-${food.id}`}
+                      className="text-[15px] text-[#e5e2e1] group-hover:text-[#bacbbc] transition-colors font-medium"
+                    >
                       {food.name}
                     </motion.span>
                     <span className="text-[12px] text-[#8e9191]">
@@ -180,7 +199,7 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                 <div
                   onClick={() => {
                     onSelectFood(food);
-                    setActiveTab('food-detail');
+                    setActiveTab("food-detail");
                   }}
                   className="col-span-3 md:col-span-2 flex items-center justify-end text-right"
                 >
@@ -193,13 +212,15 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                 <div
                   onClick={() => {
                     onSelectFood(food);
-                    setActiveTab('food-detail');
+                    setActiveTab("food-detail");
                   }}
                   className="col-span-3 md:col-span-2 flex items-center justify-end text-right"
                 >
                   <span className="font-data-highlight text-lg text-[#e5e2e1]">
-                    {food.kcalPer100g}{' '}
-                    <span className="text-[12px] text-[#c4c7c7] not-italic">kcal</span>
+                    {food.kcalPer100g}{" "}
+                    <span className="text-[12px] text-[#c4c7c7] not-italic">
+                      kcal
+                    </span>
                   </span>
                 </div>
 
@@ -236,12 +257,16 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
-                        setQuickAddOpenId(quickAddOpenId === food.id ? null : food.id);
+                        setQuickAddOpenId(
+                          quickAddOpenId === food.id ? null : food.id,
+                        );
                       }}
                       className="p-1.5 text-[#bacbbc] hover:text-[#e5e2e1] hover:bg-[#201f1f] rounded-full transition-colors"
                       title="Quick log food"
                     >
-                      <span className="material-symbols-outlined text-[20px]">add_circle</span>
+                      <span className="material-symbols-outlined text-[20px]">
+                        add_circle
+                      </span>
                     </button>
 
                     {/* Destination dropdown */}
@@ -253,7 +278,9 @@ export const FoodLibraryView: React.FC<FoodLibraryViewProps> = ({
                         <span className="font-label-caps text-[10px] text-[#8e9191] px-3 py-1 block uppercase tracking-wider">
                           Log to Meal
                         </span>
-                        {(['breakfast', 'lunch', 'snack', 'dinner'] as const).map((slot) => (
+                        {(
+                          ["breakfast", "lunch", "snack", "dinner"] as const
+                        ).map((slot) => (
                           <button
                             key={slot}
                             onClick={() => {

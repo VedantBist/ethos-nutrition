@@ -2,7 +2,15 @@ export interface FoodItem {
   id: string;
   name: string;
   subtitle: string;
-  category: 'Proteins' | 'Grains & Staples' | 'Dairy' | 'Fruits' | 'Vegetables' | 'Legumes' | 'Nuts & Seeds';
+  category: string;
+  displayName?: string;
+  foodType?: string;
+  cuisine?: string;
+  foodState?: string;
+  nutritionBasisUnit?: string;
+  nutritionBasisQuantity?: number;
+  aliases?: string[];
+  servings?: FoodServing[];
   servingDefaultGrams: number;
   kcalPer100g: number;
   proteinPer100g: number;
@@ -12,6 +20,15 @@ export interface FoodItem {
   icon: string;
   image?: string;
   description?: string;
+}
+
+export interface FoodServing {
+  id: string;
+  label: string;
+  unit: string;
+  quantityInGrams?: number;
+  quantityInMilliliters?: number;
+  isDefault: boolean;
 }
 
 export interface MealIngredient {
@@ -29,7 +46,7 @@ export interface MealIngredient {
 export interface Meal {
   id: string;
   title: string;
-  type: 'Breakfast' | 'Lunch' | 'Snack' | 'Dinner' | 'Post-Workout';
+  type: "Breakfast" | "Lunch" | "Snack" | "Dinner" | "Post-Workout";
   time?: string;
   kcal: number;
   protein: number;
@@ -65,7 +82,7 @@ export interface DayLog {
 export interface WeeklyPlanSlot {
   id: string;
   title: string;
-  type: 'Breakfast' | 'Lunch' | 'Snack' | 'Dinner';
+  type: "Breakfast" | "Lunch" | "Snack" | "Dinner";
   kcal: number;
   protein: number;
   carbs: number;
@@ -95,27 +112,26 @@ export interface UserProfile {
   targetProtein: number;
   targetCarbs: number;
   targetFat: number;
-  units: 'Metric' | 'Imperial';
+  units: "Metric" | "Imperial";
   notifications: boolean;
   avatarUrl: string;
 }
 
 export type ActiveTab =
-  | 'overview'
-  | 'meals'
-  | 'atelier'
-  | 'library'
-  | 'planner'
-  | 'nutrition'
-  | 'tracker'
-  | 'history'
-  | 'vitals'
-  | 'meal-detail'
-  | 'food-detail'
-  | 'profile'
-  | 'privacy'
-  | 'terms'
-  | 'login'
-  | 'register'
-  | '404';
-
+  | "overview"
+  | "meals"
+  | "atelier"
+  | "library"
+  | "planner"
+  | "nutrition"
+  | "tracker"
+  | "history"
+  | "vitals"
+  | "meal-detail"
+  | "food-detail"
+  | "profile"
+  | "privacy"
+  | "terms"
+  | "login"
+  | "register"
+  | "404";

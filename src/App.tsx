@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import React, { useState, useEffect } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ActiveTab,
   Meal,
@@ -7,58 +7,59 @@ import {
   DayLog,
   DayPlan,
   UserProfile,
-  LoggedFoodItem
-} from './types';
+  LoggedFoodItem,
+} from "./types";
 import {
   INITIAL_FOOD_ITEMS,
   INITIAL_MEALS,
   INITIAL_DAY_LOG,
   INITIAL_WEEK_PLAN,
-  INITIAL_USER_PROFILE
-} from './data/initialData';
-import { ShaderBackground } from './components/ShaderBackground';
-import { Navigation } from './components/Navigation';
-import { OverviewView } from './views/OverviewView';
-import { AtelierView } from './views/AtelierView';
-import { FoodLibraryView } from './views/FoodLibraryView';
-import { FoodDetailView } from './views/FoodDetailView';
-import { MealDetailView } from './views/MealDetailView';
-import { WeeklyPlannerView } from './views/WeeklyPlannerView';
-import { TrackerView } from './views/TrackerView';
-import { VitalsHistoryView } from './views/VitalsHistoryView';
-import { ProfileGoalsView } from './views/ProfileGoalsView';
-import { LegalViews } from './views/LegalViews';
-import { AuthViews } from './views/AuthViews';
-import { NotFoundView } from './views/NotFoundView';
-import { QuickLogModal } from './components/QuickLogModal';
+  INITIAL_USER_PROFILE,
+} from "./data/initialData";
+import { ShaderBackground } from "./components/ShaderBackground";
+import { Navigation } from "./components/Navigation";
+import { OverviewView } from "./views/OverviewView";
+import { AtelierView } from "./views/AtelierView";
+import { FoodLibraryView } from "./views/FoodLibraryView";
+import { FoodDetailView } from "./views/FoodDetailView";
+import { MealDetailView } from "./views/MealDetailView";
+import { WeeklyPlannerView } from "./views/WeeklyPlannerView";
+import { TrackerView } from "./views/TrackerView";
+import { VitalsHistoryView } from "./views/VitalsHistoryView";
+import { ProfileGoalsView } from "./views/ProfileGoalsView";
+import { LegalViews } from "./views/LegalViews";
+import { AuthViews } from "./views/AuthViews";
+import { NotFoundView } from "./views/NotFoundView";
+import { QuickLogModal } from "./components/QuickLogModal";
+import { foodService } from "./services/api";
 
 export const App: React.FC = () => {
   // Navigation State
-  const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
+  const [activeTab, setActiveTab] = useState<ActiveTab>("overview");
 
   // App Data with localStorage persistence
   const [foods, setFoods] = useState<FoodItem[]>(() => {
-    const saved = localStorage.getItem('ethos_foods');
+    const saved = localStorage.getItem("ethos_foods");
     return saved ? JSON.parse(saved) : INITIAL_FOOD_ITEMS;
   });
 
   const [meals, setMeals] = useState<Meal[]>(() => {
-    const saved = localStorage.getItem('ethos_meals');
+    const saved = localStorage.getItem("ethos_meals");
     return saved ? JSON.parse(saved) : INITIAL_MEALS;
   });
 
   const [todayLog, setTodayLog] = useState<DayLog>(() => {
-    const saved = localStorage.getItem('ethos_day_log');
+    const saved = localStorage.getItem("ethos_day_log");
     return saved ? JSON.parse(saved) : INITIAL_DAY_LOG;
   });
 
   const [weekPlan, setWeekPlan] = useState<DayPlan[]>(() => {
-    const saved = localStorage.getItem('ethos_week_plan');
+    const saved = localStorage.getItem("ethos_week_plan");
     return saved ? JSON.parse(saved) : INITIAL_WEEK_PLAN;
   });
 
   const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('ethos_user_profile');
+    const saved = localStorage.getItem("ethos_user_profile");
     return saved ? JSON.parse(saved) : INITIAL_USER_PROFILE;
   });
 
@@ -70,8 +71,8 @@ export const App: React.FC = () => {
   // Quick Log Modal State
   const [isQuickLogOpen, setIsQuickLogOpen] = useState(false);
   const [quickLogTargetSlot, setQuickLogTargetSlot] = useState<
-    'breakfast' | 'lunch' | 'snack' | 'dinner'
-  >('lunch');
+    "breakfast" | "lunch" | "snack" | "dinner"
+  >("lunch");
 
   // Global Toast
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -85,23 +86,49 @@ export const App: React.FC = () => {
 
   // Sync to localStorage
   useEffect(() => {
-    localStorage.setItem('ethos_foods', JSON.stringify(foods));
+    localStorage.setItem("ethos_foods", JSON.stringify(foods));
   }, [foods]);
 
+  // The library is server-authoritative when the API is available. Local data remains a
+  // deliberate offline fallback so the existing UI continues to work during development.
   useEffect(() => {
-    localStorage.setItem('ethos_meals', JSON.stringify(meals));
+    let cancelled = false;
+
+    const syncFoods = async () => {
+      try {
+        const apiFoods = await foodService.list();
+        if (!cancelled && apiFoods.length) {
+          setFoods(apiFoods);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          // Keep fallback data, but retry shortly in case backend started later.
+          window.setTimeout(syncFoods, 4000);
+        }
+      }
+    };
+
+    syncFoods();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("ethos_meals", JSON.stringify(meals));
   }, [meals]);
 
   useEffect(() => {
-    localStorage.setItem('ethos_day_log', JSON.stringify(todayLog));
+    localStorage.setItem("ethos_day_log", JSON.stringify(todayLog));
   }, [todayLog]);
 
   useEffect(() => {
-    localStorage.setItem('ethos_week_plan', JSON.stringify(weekPlan));
+    localStorage.setItem("ethos_week_plan", JSON.stringify(weekPlan));
   }, [weekPlan]);
 
   useEffect(() => {
-    localStorage.setItem('ethos_user_profile', JSON.stringify(userProfile));
+    localStorage.setItem("ethos_user_profile", JSON.stringify(userProfile));
   }, [userProfile]);
 
   // Handlers
@@ -121,36 +148,36 @@ export const App: React.FC = () => {
 
   const handleEditMealRequest = (mealToEdit: Meal) => {
     setEditingMeal(mealToEdit);
-    setActiveTab('meals');
+    setActiveTab("meals");
   };
 
   const handleLogMealDirectly = (mealToLog: Meal) => {
-    const slotKey: 'breakfast' | 'lunch' | 'snack' | 'dinner' =
-      mealToLog.type.toLowerCase() === 'breakfast'
-        ? 'breakfast'
-        : mealToLog.type.toLowerCase() === 'dinner'
-        ? 'dinner'
-        : mealToLog.type.toLowerCase() === 'snack'
-        ? 'snack'
-        : 'lunch';
+    const slotKey: "breakfast" | "lunch" | "snack" | "dinner" =
+      mealToLog.type.toLowerCase() === "breakfast"
+        ? "breakfast"
+        : mealToLog.type.toLowerCase() === "dinner"
+          ? "dinner"
+          : mealToLog.type.toLowerCase() === "snack"
+            ? "snack"
+            : "lunch";
 
     const newLogItem: LoggedFoodItem = {
       id: `log-meal-${Date.now()}`,
       name: mealToLog.title,
-      amountText: '1 recipe serving',
+      amountText: "1 recipe serving",
       amountGrams: mealToLog.ingredients.reduce((s, i) => s + i.amountGrams, 0),
       kcal: mealToLog.kcal,
       protein: mealToLog.protein,
       carbs: mealToLog.carbs,
-      fat: mealToLog.fat
+      fat: mealToLog.fat,
     };
 
     setTodayLog((prev) => ({
       ...prev,
       meals: {
         ...prev.meals,
-        [slotKey]: [newLogItem, ...prev.meals[slotKey]]
-      }
+        [slotKey]: [newLogItem, ...prev.meals[slotKey]],
+      },
     }));
 
     triggerToast(`Logged "${mealToLog.title}" to ${slotKey}.`);
@@ -159,7 +186,7 @@ export const App: React.FC = () => {
   const handleAddFoodToLog = (
     food: FoodItem,
     grams: number,
-    slot: 'breakfast' | 'lunch' | 'snack' | 'dinner'
+    slot: "breakfast" | "lunch" | "snack" | "dinner",
   ) => {
     const ratio = grams / 100;
     const newLogItem: LoggedFoodItem = {
@@ -171,35 +198,37 @@ export const App: React.FC = () => {
       kcal: Math.round(food.kcalPer100g * ratio),
       protein: Math.round(food.proteinPer100g * ratio),
       carbs: Math.round(food.carbsPer100g * ratio),
-      fat: Math.round(food.fatPer100g * ratio)
+      fat: Math.round(food.fatPer100g * ratio),
     };
 
     setTodayLog((prev) => ({
       ...prev,
       meals: {
         ...prev.meals,
-        [slot]: [newLogItem, ...prev.meals[slot]]
-      }
+        [slot]: [newLogItem, ...prev.meals[slot]],
+      },
     }));
 
     triggerToast(`Added ${food.name} (${grams}g) to ${slot}.`);
   };
 
-  const handleOpenQuickLog = (targetSlot: 'breakfast' | 'lunch' | 'snack' | 'dinner' = 'lunch') => {
+  const handleOpenQuickLog = (
+    targetSlot: "breakfast" | "lunch" | "snack" | "dinner" = "lunch",
+  ) => {
     setQuickLogTargetSlot(targetSlot);
     setIsQuickLogOpen(true);
   };
 
   const handleAddQuickLogItem = (
-    mealSlot: 'breakfast' | 'lunch' | 'snack' | 'dinner',
-    item: LoggedFoodItem
+    mealSlot: "breakfast" | "lunch" | "snack" | "dinner",
+    item: LoggedFoodItem,
   ) => {
     setTodayLog((prev) => ({
       ...prev,
       meals: {
         ...prev.meals,
-        [mealSlot]: [item, ...prev.meals[mealSlot]]
-      }
+        [mealSlot]: [item, ...prev.meals[mealSlot]],
+      },
     }));
     triggerToast(`Logged ${item.name} (${item.kcal} kcal) to ${mealSlot}.`);
   };
@@ -213,13 +242,17 @@ export const App: React.FC = () => {
       <Navigation
         activeTab={activeTab}
         setActiveTab={(tab) => {
-          if ((tab === 'meals' || tab === 'atelier') && activeTab !== 'meals' && activeTab !== 'atelier') {
+          if (
+            (tab === "meals" || tab === "atelier") &&
+            activeTab !== "meals" &&
+            activeTab !== "atelier"
+          ) {
             setEditingMeal(null);
           }
           setActiveTab(tab);
         }}
         userProfile={userProfile}
-        onOpenQuickLog={() => handleOpenQuickLog('lunch')}
+        onOpenQuickLog={() => handleOpenQuickLog("lunch")}
       />
 
       {/* Main Content Area */}
@@ -230,21 +263,21 @@ export const App: React.FC = () => {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: 'easeOut' }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
             className="w-full h-full"
           >
-            {activeTab === 'overview' && (
+            {activeTab === "overview" && (
               <OverviewView
                 meals={meals}
                 userProfile={userProfile}
                 todayLog={todayLog}
                 setActiveTab={setActiveTab}
                 onSelectMeal={(m) => setSelectedMeal(m)}
-                onOpenQuickLog={() => handleOpenQuickLog('lunch')}
+                onOpenQuickLog={() => handleOpenQuickLog("lunch")}
               />
             )}
 
-            {(activeTab === 'meals' || activeTab === 'atelier') && (
+            {(activeTab === "meals" || activeTab === "atelier") && (
               <AtelierView
                 onSaveMeal={handleSaveMealInAtelier}
                 availableFoods={foods}
@@ -253,16 +286,18 @@ export const App: React.FC = () => {
               />
             )}
 
-            {activeTab === 'library' && (
+            {activeTab === "library" && (
               <FoodLibraryView
                 foods={foods}
                 setActiveTab={setActiveTab}
                 onSelectFood={(f) => setSelectedFood(f)}
-                onQuickAddFood={(f, slot) => handleAddFoodToLog(f, f.servingDefaultGrams || 100, slot)}
+                onQuickAddFood={(f, slot) =>
+                  handleAddFoodToLog(f, f.servingDefaultGrams || 100, slot)
+                }
               />
             )}
 
-            {activeTab === 'food-detail' && (
+            {activeTab === "food-detail" && (
               <FoodDetailView
                 food={selectedFood}
                 setActiveTab={setActiveTab}
@@ -270,7 +305,7 @@ export const App: React.FC = () => {
               />
             )}
 
-            {activeTab === 'meal-detail' && (
+            {activeTab === "meal-detail" && (
               <MealDetailView
                 meal={selectedMeal}
                 setActiveTab={setActiveTab}
@@ -279,7 +314,7 @@ export const App: React.FC = () => {
               />
             )}
 
-            {activeTab === 'planner' && (
+            {activeTab === "planner" && (
               <WeeklyPlannerView
                 weekPlan={weekPlan}
                 setWeekPlan={setWeekPlan}
@@ -289,7 +324,7 @@ export const App: React.FC = () => {
               />
             )}
 
-            {(activeTab === 'nutrition' || activeTab === 'tracker') && (
+            {(activeTab === "nutrition" || activeTab === "tracker") && (
               <TrackerView
                 dayLog={todayLog}
                 setDayLog={setTodayLog}
@@ -300,30 +335,33 @@ export const App: React.FC = () => {
               />
             )}
 
-            {(activeTab === 'history' || activeTab === 'vitals') && (
-              <VitalsHistoryView userProfile={userProfile} setActiveTab={setActiveTab} />
+            {(activeTab === "history" || activeTab === "vitals") && (
+              <VitalsHistoryView
+                userProfile={userProfile}
+                setActiveTab={setActiveTab}
+              />
             )}
 
-            {(activeTab === 'profile' || activeTab === 'settings') && (
+            {(activeTab === "profile" || activeTab === "settings") && (
               <ProfileGoalsView
                 userProfile={userProfile}
                 onUpdateProfile={(updated) => {
                   setUserProfile(updated);
-                  triggerToast('Profile & nutritional targets saved.');
+                  triggerToast("Profile & nutritional targets saved.");
                 }}
                 setActiveTab={setActiveTab}
               />
             )}
 
-            {activeTab === 'privacy' && (
+            {activeTab === "privacy" && (
               <LegalViews type="privacy" setActiveTab={setActiveTab} />
             )}
 
-            {activeTab === 'terms' && (
+            {activeTab === "terms" && (
               <LegalViews type="terms" setActiveTab={setActiveTab} />
             )}
 
-            {activeTab === 'login' && (
+            {activeTab === "login" && (
               <AuthViews
                 mode="login"
                 setActiveTab={setActiveTab}
@@ -334,7 +372,7 @@ export const App: React.FC = () => {
               />
             )}
 
-            {activeTab === 'register' && (
+            {activeTab === "register" && (
               <AuthViews
                 mode="register"
                 setActiveTab={setActiveTab}
@@ -345,7 +383,9 @@ export const App: React.FC = () => {
               />
             )}
 
-            {activeTab === '404' && <NotFoundView setActiveTab={setActiveTab} />}
+            {activeTab === "404" && (
+              <NotFoundView setActiveTab={setActiveTab} />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>

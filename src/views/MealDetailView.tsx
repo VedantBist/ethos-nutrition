@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useSpring, useTransform } from 'motion/react';
-import { Meal, ActiveTab } from '../types';
+import React, { useState, useEffect } from "react";
+import { motion, useSpring, useTransform } from "motion/react";
+import { Meal, ActiveTab } from "../types";
 
 interface MealDetailViewProps {
   meal: Meal;
@@ -11,13 +11,13 @@ interface MealDetailViewProps {
 
 const NumberTicker = ({ value }: { value: number }) => {
   const springValue = useSpring(0, { stiffness: 60, damping: 20 });
-  
+
   React.useEffect(() => {
     springValue.set(value);
   }, [value, springValue]);
 
   const display = useTransform(springValue, (current) => Math.round(current));
-  
+
   return <motion.span>{display}</motion.span>;
 };
 
@@ -25,7 +25,7 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
   meal,
   setActiveTab,
   onEditMeal,
-  onLogMeal
+  onLogMeal,
 }) => {
   const [logged, setLogged] = useState(false);
 
@@ -34,7 +34,7 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
     setLogged(true);
     setTimeout(() => {
       setLogged(false);
-      setActiveTab('tracker');
+      setActiveTab("tracker");
     }, 1200);
   };
 
@@ -45,16 +45,18 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
       className="w-full max-w-[1200px] mx-auto px-4 md:px-8 py-8 flex flex-col"
     >
       {/* Header & Back Action */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-12 border-b border-[#444748]/20 pb-6 w-full"
       >
         <button
-          onClick={() => setActiveTab('overview')}
+          onClick={() => setActiveTab("overview")}
           className="flex items-center gap-2 text-[#c4c7c7] hover:text-[#e5e2e1] transition-colors duration-300 font-label-caps text-xs uppercase tracking-widest"
         >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          <span className="material-symbols-outlined text-[18px]">
+            arrow_back
+          </span>
           <span>Back to Overview</span>
         </button>
 
@@ -69,31 +71,34 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
             onClick={handleLog}
             className={`font-label-caps text-xs uppercase tracking-widest px-7 py-3 rounded-full transition-all duration-300 shadow-md ${
               logged
-                ? 'bg-[#bacbbc] text-[#141313]'
-                : 'text-[#141313] bg-[#9E8E77] hover:bg-[#b0a08b]'
+                ? "bg-[#bacbbc] text-[#141313]"
+                : "text-[#141313] bg-[#9E8E77] hover:bg-[#b0a08b]"
             }`}
           >
-            {logged ? 'Logged to Food Tracker' : 'Log This Meal'}
+            {logged ? "Logged to Food Tracker" : "Log This Meal"}
           </button>
         </div>
       </motion.header>
 
       {/* Hero Section */}
-      <motion.div 
+      <motion.div
         layoutId={`meal-card-${meal.id}`}
         className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-12 items-center bg-transparent rounded-xl"
       >
         <div className="lg:col-span-6 flex flex-col gap-6">
           <div>
             <span className="font-label-caps text-[11px] text-[#bacbbc] mb-2 tracking-wider uppercase block">
-              {meal.type} · {meal.time || '13:00'}
+              {meal.type} · {meal.time || "13:00"}
             </span>
-            <motion.h1 layoutId={`meal-name-${meal.id}`} className="font-display-lg text-3xl md:text-5xl text-[#e5e2e1] mb-3 font-medium">
+            <motion.h1
+              layoutId={`meal-name-${meal.id}`}
+              className="font-display-lg text-3xl md:text-5xl text-[#e5e2e1] mb-3 font-medium"
+            >
               {meal.title}
             </motion.h1>
             <p className="text-[15px] text-[#c4c7c7] max-w-lg leading-relaxed">
               {meal.description ||
-                'A restorative blend of nutrient-dense ingredients formulated for metabolic balance and sustained vitality.'}
+                "A restorative blend of nutrient-dense ingredients formulated for metabolic balance and sustained vitality."}
             </p>
           </div>
 
@@ -114,17 +119,22 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
             alt={meal.title}
             src={
               meal.image ||
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuBgI1PsaIPbFZwgcmIbAG5xH9e2ipxP9MsiNJC08Fs5CE7krupsQH1q-uSFUe1OQgrM_cdccLb7Mo6Q8lzLzffTolbnNe_cuEDsIZCOxXMWa1_HZm7pOHOOTZd_LvGCvHsY3aIRyTP8z1wNF1_1i_31_JkFpJbKPAn19mjike-QcZdlkSvfWl4z8MHeruBaZk64PpMhaa4FX0qMKoKVRcLy-HbrC082R2T53z-i_cE4BeKYXfdYAVgd'
+              "https://lh3.googleusercontent.com/aida-public/AB6AXuBgI1PsaIPbFZwgcmIbAG5xH9e2ipxP9MsiNJC08Fs5CE7krupsQH1q-uSFUe1OQgrM_cdccLb7Mo6Q8lzLzffTolbnNe_cuEDsIZCOxXMWa1_HZm7pOHOOTZd_LvGCvHsY3aIRyTP8z1wNF1_1i_31_JkFpJbKPAn19mjike-QcZdlkSvfWl4z8MHeruBaZk64PpMhaa4FX0qMKoKVRcLy-HbrC082R2T53z-i_cE4BeKYXfdYAVgd"
             }
           />
         </div>
       </motion.div>
 
       {/* Divider */}
-      <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: 0.5, ease: 'easeOut' }} className="w-full h-px bg-[#444748]/20 mb-12 origin-left" />
+      <motion.div
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full h-px bg-[#444748]/20 mb-12 origin-left"
+      />
 
       {/* Macros & Ingredients Split */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
@@ -151,7 +161,8 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
 
               <div className="flex justify-between items-baseline py-3">
                 <span className="text-[13px] text-[#e5e2e1] flex items-center gap-2 font-medium">
-                  <span className="w-2 h-2 rounded-full bg-[#9E8E77]" /> Carbohydrates
+                  <span className="w-2 h-2 rounded-full bg-[#9E8E77]" />{" "}
+                  Carbohydrates
                 </span>
                 <div className="flex items-baseline gap-1">
                   <span className="text-2xl font-data-highlight text-[#e5e2e1]">
@@ -184,16 +195,24 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
 
           <div className="flex flex-col divide-y divide-[#444748]/15">
             {meal.ingredients.map((ing, i) => {
-              const ingCals = Math.round((ing.amountGrams * ing.kcalPer100g) / 100);
-              const ingPro = Math.round((ing.amountGrams * ing.proteinPer100g) / 100);
-              const ingCarbs = Math.round((ing.amountGrams * ing.carbsPer100g) / 100);
-              const ingFat = Math.round((ing.amountGrams * ing.fatPer100g) / 100);
+              const ingCals = Math.round(
+                (ing.amountGrams * ing.kcalPer100g) / 100,
+              );
+              const ingPro = Math.round(
+                (ing.amountGrams * ing.proteinPer100g) / 100,
+              );
+              const ingCarbs = Math.round(
+                (ing.amountGrams * ing.carbsPer100g) / 100,
+              );
+              const ingFat = Math.round(
+                (ing.amountGrams * ing.fatPer100g) / 100,
+              );
 
               return (
                 <motion.div
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.3 + (i * 0.05) }}
+                  transition={{ delay: 0.3 + i * 0.05 }}
                   key={i}
                   className="grid grid-cols-12 py-4 hover:bg-[#1a1919] transition-colors px-2 rounded items-center"
                 >
@@ -211,7 +230,9 @@ export const MealDetailView: React.FC<MealDetailViewProps> = ({
                     <span className="font-data-highlight text-base text-[#e5e2e1]">
                       {ingCals}
                     </span>
-                    <span className="text-[12px] text-[#c4c7c7] ml-1">kcal</span>
+                    <span className="text-[12px] text-[#c4c7c7] ml-1">
+                      kcal
+                    </span>
                   </div>
 
                   <div className="col-span-3 flex items-center justify-end gap-2 text-[12px] text-[#c4c7c7]">
